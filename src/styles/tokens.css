@@ -1,14 +1,34 @@
 :root {
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #1f2937;
-  --accent: #10b981;
-  --accent-foreground: #ffffff;
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --radius: 0.5rem;
+  /* Brand colors */
+  --sola-orange: #ff7139;
+  --sola-orange-soft: #fff1e9;
+  --sola-orange-hover: #f05e24;
+
+  /* Neutrals */
+  --sola-navy: #111938;
+  --sola-navy-muted: #2d3658;
+  --sola-text-secondary: #73778a;
+
+  /* Accent status colors */
+  --sola-green: #27b47e;
+  --sola-green-soft: #eaf8f2;
+  --sola-blue: #4c8df6;
+  --sola-blue-soft: #eef4fe;
+  --sola-purple: #8b5cf6;
+  --sola-purple-soft: #f4f0ff;
+  --sola-yellow: #f7ab29;
+  --sola-yellow-soft: #fef7ea;
+  --sola-red: #ed646f;
+  --sola-red-soft: #fdebed;
+
+  /* Backgrounds & surfaces */
+  --sola-bg: #fffdf9;
+  --sola-surface: #ffffff;
+  --sola-border: #f0ede6;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }

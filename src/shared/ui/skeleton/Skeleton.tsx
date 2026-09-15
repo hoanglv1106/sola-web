@@ -1,11 +1,13 @@
 import React from 'react';
+import { cn } from '@/shared/lib/cn';
 
-export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type SkeletonProps = React.HTMLAttributes<HTMLDivElement>;
 
-export function Skeleton({ className = '', children, ...props }: SkeletonProps) {
+export function Skeleton({ className = '', ...props }: SkeletonProps) {
   return (
-    <div className={`sola-${className}`} {...props}>
-      {children}
-    </div>
+    <div
+      className={cn('animate-pulse rounded-xl bg-gray-200/80', className)}
+      {...props}
+    />
   );
 }
