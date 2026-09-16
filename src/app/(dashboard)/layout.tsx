@@ -22,7 +22,7 @@ export default function DashboardLayout({
   } else if (pathname?.includes('/assessment/result')) {
     backLabel = 'Back';
     backHref = '/assessment/test';
-  } else if (pathname?.includes('/learn')) {
+  } else if (pathname?.includes('/learn') || pathname?.includes('/session')) {
     backLabel = 'Back to Dashboard';
     backHref = '/home';
   }

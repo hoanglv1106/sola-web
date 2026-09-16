@@ -1,8 +1,6 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Weekly Plan</h1>
-      <p className="text-gray-600">Welcome to Weekly Plan</p>
-    </div>
-  );
+import React from 'react';
+import { WeeklyPlan } from '@/modules/learning/components/WeeklyPlan';
+
+export default function WeeklyPlanPage() {
+  return <WeeklyPlan />;
 }

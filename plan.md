@@ -86,10 +86,10 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 
 ---
 
-### 🟡 PHASE 2: Core Learning Experience (Mục 3 → 7) — [CORE MVP CHECKPOINT]
+### 🟢 PHASE 2: Core Learning Experience (Mục 3 → 7) — [CORE MVP CHECKPOINT] (Đã hoàn thành)
 - **Mục tiêu**: Hoàn thiện vòng lặp học tập cốt lõi hàng ngày từ trang chủ đến lộ trình tuần, bài học tương tác và buổi học trong ngày.
 - **UI Mappings & Routes**:
-  1. **Item 3: Home Dashboard**
+  1. **Item 3: Home Dashboard** [x]
      - **UI**: `Image-UI-Ux/home.png`
      - **Route**: `src/app/(dashboard)/home/page.tsx`
      - **Module/Widgets**:
@@ -98,14 +98,14 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
        - Widget `LearnerGoalCard`: Mục tiêu IELTS 7.5, streak 18 ngày, quote truyền cảm hứng.
        - Widget `SkillOverview`: 6 vòng tròn kỹ năng cập nhật theo buổi học gần nhất.
        - Widget `SessionInsightCard`: Insight từ buổi học trước ("You used 'I would rather' correctly today!").
-  2. **Item 4: Learning Path**
+  2. **Item 4: Learning Path** [x]
      - **UI**: `Image-UI-Ux/Learn.png`
      - **Route**: `src/app/(dashboard)/learn/path/page.tsx` (hoặc `/learn`)
      - **Module/Widgets**:
        - `RoadmapStepper`: Con đường học tập qua các giai đoạn (Foundation → Communication → Real-world English "You are here" → Exam Readiness → Achieve Goal).
        - `WeakAreasCard`: Các kỹ năng yếu cần ưu tiên (Speaking fluency, Academic vocabulary, Listening detail).
        - `ThisWeekPathList`: 5 thẻ bài học trọng tâm trong tuần (Grammar in Context, Speaking Fluency, Listening, Vocabulary, Professional English).
-  3. **Item 5: Weekly Learning Plan**
+  3. **Item 5: Weekly Learning Plan** [x]
      - **UI**: `Image-UI-Ux/learn-week planing.png`
      - **Route**: `src/app/(dashboard)/learn/weekly-plan/page.tsx`
      - **Module/Widgets**:
@@ -113,7 +113,7 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
        - `StudyTimeGoalCard`: Tiến độ 150 phút (60/150 min - 40%).
        - `WeeklyCalendarPlanner`: Lịch 7 ngày (Mon → Sun) với trạng thái Completed / Today / Upcoming.
        - `WhyTheseTopicsCard`: Giải thích lý do chọn chủ đề cho tuần.
-  4. **Item 6: Lesson Engine (Data-driven)**
+  4. **Item 6: Lesson Engine (Data-driven)** [x]
      - **UI**: `Image-UI-Ux/Learn-Grammar.png`
      - **Route**: `src/app/(dashboard)/learn/lessons/[lessonId]/page.tsx`
      - **Module/Widgets**:
@@ -122,14 +122,14 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
        - `LessonExamples`: Danh sách ví dụ thực tế kèm nút nghe phát âm.
        - `QuickCheckQuiz`: Câu hỏi kiểm tra nhanh dạng radio và giải thích đáp án ngay khi chọn.
        - `MayaTipsCard`: Lời khuyên hữu ích từ gia sư Maya.
-  5. **Item 7: Today's Session Runner**
+  5. **Item 7: Today's Session Runner** [x]
      - **UI**: `Image-UI-Ux/Today's Session.png`
      - **Route**: `src/app/(dashboard)/session/today/page.tsx`
      - **Module/Widgets**:
        - `SessionFlowStepper`: Điều hướng qua 4 hoạt động liên tiếp (Grammar Warm-up 5m → Speaking Practice 8m → Listening Practice 7m → Vocabulary Review 5m).
        - `ActivityRenderer`: Renderer linh hoạt hiển thị bài tập Grammar (chọn "would rather" vs "would rather to"), chấm điểm tức thì.
        - `NextUpCard`: Danh sách các hoạt động tiếp theo trong buổi học.
-- **Checkpoint Deliverable**: Learner có thể vào Home → xem kế hoạch ngày → mở lộ trình → chạy trọn vẹn 1 Lesson và 1 Daily Session.
+- **Checkpoint Deliverable**: Learner có thể vào Home → xem kế hoạch ngày → mở lộ trình → chạy trọn vẹn 1 Lesson và 1 Daily Session. [x]
 
 ---
 

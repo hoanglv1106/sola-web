@@ -1,13 +1,12 @@
-export default async function Page({
+import React from 'react';
+import { LessonEngine } from '@/modules/lesson';
+import { mockGrammarLesson } from '@/mocks/lesson.mock';
+
+export default async function LessonDetailPage({
   params,
 }: {
   params: Promise<{ lessonId: string }>;
 }) {
-  const { lessonId } = await params;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Lesson Detail</h1>
-      <p className="text-gray-600">ID: {lessonId}</p>
-    </div>
-  );
+  await params; // consume dynamic param
+  return <LessonEngine lesson={mockGrammarLesson} />;
 }
