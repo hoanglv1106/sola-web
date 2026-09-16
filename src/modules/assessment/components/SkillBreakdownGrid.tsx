@@ -73,3 +73,4 @@ export function SkillBreakdownGrid({ skills }: SkillBreakdownGridProps) {
     </div>
   );
 }
+

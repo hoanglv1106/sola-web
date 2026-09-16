@@ -58,3 +58,4 @@ export function OnboardingStepper({ currentStep = 1 }: { currentStep?: number })
     </div>
   );
 }
+

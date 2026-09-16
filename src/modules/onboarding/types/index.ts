@@ -27,3 +27,4 @@ export interface OnboardingFormValues {
   studyTime: DailyStudyTime;
   targetTimeline: TargetTimeline;
 }
+
