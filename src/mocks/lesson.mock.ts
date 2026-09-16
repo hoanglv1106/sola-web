@@ -72,3 +72,4 @@ export const mockGrammarLesson: LessonData = {
     explanation: 'Great! “I’d rather not” sounds more natural and friendly in everyday conversation.',
   },
 };
+

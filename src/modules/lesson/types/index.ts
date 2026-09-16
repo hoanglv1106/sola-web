@@ -38,3 +38,4 @@ export interface LessonData {
   mayaTips: string[];
   quickCheck: LessonQuickCheck;
 }
+
