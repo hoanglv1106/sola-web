@@ -143,3 +143,4 @@ export const mockWeeklyPracticeStats: WeeklyPracticeStats = {
     { day: 'Sun', completed: false },
   ],
 };
+
