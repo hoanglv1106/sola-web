@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Vocabulary Review</h1>
-      <p className="text-gray-600">Welcome to Vocabulary Review</p>
-    </div>
-  );
+import React from 'react';
+import { VocabularyReviewSession } from '@/modules/vocabulary';
+
+export const metadata = {
+  title: 'Vocabulary Review Session | SOLA',
+  description: 'Review words with spaced repetition to make them stick with SOLA English.',
+};
+
+export default function VocabularyReviewPage() {
+  return <VocabularyReviewSession />;
 }

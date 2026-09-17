@@ -22,7 +22,20 @@ export default function DashboardLayout({
   } else if (pathname?.includes('/assessment/result')) {
     backLabel = 'Back';
     backHref = '/assessment/test';
-  } else if (pathname?.includes('/learn') || pathname?.includes('/session')) {
+  } else if (pathname?.includes('/vocabulary/review')) {
+    backLabel = 'Back to Vocabulary';
+    backHref = '/vocabulary';
+  } else if (pathname?.includes('/mistakes') && pathname?.includes('/practice')) {
+    backLabel = 'Back to Mistakes';
+    backHref = '/mistakes';
+  } else if (
+    pathname?.includes('/learn') ||
+    pathname?.includes('/session') ||
+    pathname?.includes('/practice') ||
+    pathname?.includes('/vocabulary') ||
+    pathname?.includes('/mistakes') ||
+    pathname?.includes('/progress')
+  ) {
     backLabel = 'Back to Dashboard';
     backHref = '/home';
   }

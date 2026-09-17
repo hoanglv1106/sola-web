@@ -1,13 +1,16 @@
-export default async function Page({
+import React from 'react';
+import { PracticeMistakeRunner } from '@/modules/mistakes';
+
+export const metadata = {
+  title: 'Practice a Mistake | SOLA',
+  description: 'Practice and master tricky English mistakes with SOLA AI Tutor.',
+};
+
+export default async function PracticeMistakePage({
   params,
 }: {
   params: Promise<{ mistakeId: string }>;
 }) {
-  const { mistakeId } = await params;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Mistake Practice</h1>
-      <p className="text-gray-600">ID: {mistakeId}</p>
-    </div>
-  );
+  await params; // Ensure params Promise is resolved in Next.js 15
+  return <PracticeMistakeRunner />;
 }

@@ -133,34 +133,34 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 
 ---
 
-### 🟠 PHASE 3: Retention & Daily Practice Loop (Mục 8 → 13) — [LEARNING LOOP CHECKPOINT]
+### 🟢 PHASE 3: Retention & Daily Practice Loop (Mục 8 → 13) — [LEARNING LOOP CHECKPOINT] (Đã hoàn thành)
 - **Mục tiêu**: Xây dựng hệ sinh thái tự luyện tập, củng cố từ vựng (Spaced Repetition), sổ tay lỗi sai cá nhân hóa và bảng theo dõi tiến độ học tập chi tiết.
 - **UI Mappings & Routes**:
-  1. **Item 8: Practice Center**
+  1. **Item 8: Practice Center** [x]
      - **UI**: `Image-UI-Ux/Practice Center.png`
      - **Route**: `src/app/(dashboard)/practice/page.tsx`
      - **Nội dung**: Bộ lọc kỹ năng (All, Grammar, Speaking, Listening, Reading, Writing, Vocabulary, Pronunciation, Business, IELTS, TOEIC), khối "Recommended for Alex today", và danh sách "All practice activities" đa dạng.
-  2. **Item 9: Vocabulary Dashboard**
+  2. **Item 9: Vocabulary Dashboard** [x]
      - **UI**: `Image-UI-Ux/vocabulary.png`
      - **Route**: `src/app/(dashboard)/vocabulary/page.tsx`
      - **Nội dung**: Thống kê từ vựng theo 5 mức độ làm chủ (New, Learning, Familiar, Strong, Mastered - tổng 482 từ), hàng chờ ôn tập trong ngày "Today's review queue" (thẻ từ vựng có phiên âm, định nghĩa, ví dụ, collocations, audio).
-  3. **Item 10: Vocabulary Review Session**
+  3. **Item 10: Vocabulary Review Session** [x]
      - **UI**: `Image-UI-Ux/Practice-vocabulary revioew.png`
      - **Route**: `src/app/(dashboard)/vocabulary/review/page.tsx`
      - **Nội dung**: Giao diện flashcard chuyên sâu, phát âm, ví dụ, cụm từ đi kèm (collocations), từ đồng nghĩa, thanh tiến độ 5 cấp bậc từ vựng, nút "I know this" và "Need more practice".
-  4. **Item 11: Mistakes & Review Notebook**
+  4. **Item 11: Mistakes & Review Notebook** [x]
      - **UI**: `Image-UI-Ux/Mistakes & Review.png`
      - **Route**: `src/app/(dashboard)/mistakes/page.tsx`
      - **Nội dung**: Sổ tay gom lỗi sai từ mọi hoạt động (Grammar, Vocabulary, Pronunciation, Speaking, Writing), hiển thị lỗi người dùng nói/viết vs câu sửa chuẩn, biểu đồ tỷ lệ lỗi thường gặp, nút "Practice again" và "Ask Maya".
-  5. **Item 12: Practice a Mistake**
+  5. **Item 12: Practice a Mistake** [x]
      - **UI**: `Image-UI-Ux/Mistakes & Review  - Practice a Mistake.png`
      - **Route**: `src/app/(dashboard)/mistakes/[mistakeId]/practice/page.tsx`
      - **Nội dung**: Bài tập khắc phục lỗi chuyên sâu 4 bước (Learn → Practice → Check → Wrap up), câu hỏi trắc nghiệm củng cố, thanh đo độ tự tin "Your confidence", nút đánh dấu "Mark as improved".
-  6. **Item 13: Progress & Analytics**
+  6. **Item 13: Progress & Analytics** [x]
      - **UI**: `Image-UI-Ux/Progress.png`
      - **Route**: `src/app/(dashboard)/progress/page.tsx`
      - **Nội dung**: Biểu đồ đường tăng trưởng kỹ năng theo thời gian (Last 4 weeks), phân tích AI insights, bảng tổng hợp "Review for today" (Spaced repetition, Pronunciation, Mistakes).
-- **Checkpoint Deliverable**: Hoàn thiện trọn vẹn vòng lặp ghi nhớ kiến thức: Học → Luyện tập → Phát hiện lỗi sai → Ôn tập từ vựng & sửa lỗi → Đánh giá tiến bộ.
+- **Checkpoint Deliverable**: Hoàn thiện trọn vẹn vòng lặp ghi nhớ kiến thức: Học → Luyện tập → Phát hiện lỗi sai → Ôn tập từ vựng & sửa lỗi → Đánh giá tiến bộ. [x]
 
 ---
 

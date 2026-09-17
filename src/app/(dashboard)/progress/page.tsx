@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Progress Analytics</h1>
-      <p className="text-gray-600">Welcome to Progress Analytics</p>
-    </div>
-  );
+import React from 'react';
+import { ProgressAnalytics } from '@/modules/progress';
+
+export const metadata = {
+  title: 'Progress & Review | SOLA',
+  description: 'Track your English learning journey and review key skills with SOLA.',
+};
+
+export default function ProgressPage() {
+  return <ProgressAnalytics />;
 }

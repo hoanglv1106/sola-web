@@ -10,6 +10,8 @@ export interface ProgressRingProps {
   sublabel?: string;
   badge?: React.ReactNode;
   className?: string;
+  children?: React.ReactNode;
+  hideValue?: boolean;
 }
 
 export function ProgressRing({
@@ -21,6 +23,8 @@ export function ProgressRing({
   sublabel,
   badge,
   className,
+  children,
+  hideValue = false,
 }: ProgressRingProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -66,11 +70,15 @@ export function ProgressRing({
           />
         </svg>
 
-        {/* Center percentage value */}
+        {/* Center content or percentage value */}
         <div className="absolute flex flex-col items-center justify-center">
-          <span className="text-xl font-bold text-sola-navy tracking-tight">
-            {clampedValue}%
-          </span>
+          {children ? (
+            children
+          ) : !hideValue ? (
+            <span className="text-xl font-bold text-sola-navy tracking-tight">
+              {clampedValue}%
+            </span>
+          ) : null}
         </div>
       </div>
 

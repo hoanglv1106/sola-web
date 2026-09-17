@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Practice Exercises</h1>
-      <p className="text-gray-600">Welcome to Practice Exercises</p>
-    </div>
-  );
+import React from 'react';
+import { PracticeCenter } from '@/modules/practice';
+
+export const metadata = {
+  title: 'Practice Center | SOLA',
+  description: 'Choose what to practice and make real progress with SOLA English.',
+};
+
+export default function PracticePage() {
+  return <PracticeCenter />;
 }

@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Vocabulary List</h1>
-      <p className="text-gray-600">Welcome to Vocabulary List</p>
-    </div>
-  );
+import React from 'react';
+import { VocabularyDashboard } from '@/modules/vocabulary';
+
+export const metadata = {
+  title: 'Vocabulary | SOLA',
+  description: 'Build a richer vocabulary for real conversations with SOLA English.',
+};
+
+export default function VocabularyPage() {
+  return <VocabularyDashboard />;
 }
