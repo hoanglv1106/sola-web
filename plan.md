@@ -164,22 +164,22 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 
 ---
 
-### 🔵 PHASE 4: AI Tutor & Voice Coaching (Mục 14 → 16) — [AI MVP CHECKPOINT]
+### 🟢 PHASE 4: AI Tutor & Voice Coaching (Mục 14 → 16) — [AI MVP CHECKPOINT] (Đã hoàn thành)
 - **Mục tiêu**: Xây dựng trải nghiệm gia sư AI tương tác thời gian thực bằng cả văn bản (Text Chat) và giọng nói (Voice Practice) kèm hệ thống phản hồi sửa lỗi tức thì.
 - **UI Mappings & Routes**:
-  1. **Item 14: AI Tutor Text Chat**
+  1. **Item 14: AI Tutor Text Chat** [x]
      - **UI**: `Image-UI-Ux/AI Tutor.png`
      - **Route**: `src/app/(dashboard)/tutor/page.tsx`
      - **Nội dung**: Cuộc trò chuyện tự nhiên với Maya, giả lập tình huống công việc/hội thoại, phản hồi trực tiếp (Live feedback: Corrections, Better phrasing, Vocabulary suggestions), chấm điểm hội thoại (Conversation score).
-  2. **Item 15: AI Tutor Voice Practice**
+  2. **Item 15: AI Tutor Voice Practice** [x]
      - **UI**: `Image-UI-Ux/AI-Tutor Voice practice.png`
      - **Route**: `src/app/(dashboard)/tutor/sessions/[sessionId]/page.tsx`
      - **Nội dung**: Giao diện thu âm giọng nói, sóng âm thanh động (animated waveform), đếm thời gian, chuyển đổi lời nói thành văn bản trực tiếp (live transcript), đánh giá phát âm & độ trôi chảy (Fluency & Pronunciation realtime).
-  3. **Item 16: Speaking Session Feedback**
+  3. **Item 16: Speaking Session Feedback** [x]
      - **UI**: `Image-UI-Ux/AI Tubor feedback speaking.png`
      - **Route**: `src/app/(dashboard)/tutor/sessions/[sessionId]/feedback/page.tsx`
      - **Nội dung**: Báo cáo tổng kết sau buổi nói chuyện: Điểm tổng quát (85/100), phân tích 5 kỹ năng (Fluency, Grammar, Pronunciation, Vocabulary, Confidence), danh sách câu sửa lỗi (Key corrections), cách diễn đạt tự nhiên hơn (Better phrasing), từ vựng mới thu thập được.
-- **Checkpoint Deliverable**: Người học có thể giao tiếp với AI Tutor bằng văn bản hoặc giọng nói, nhận phản hồi sửa lỗi chi tiết và lưu từ vựng/lỗi sai tự động.
+- **Checkpoint Deliverable**: Người học có thể giao tiếp với AI Tutor bằng văn bản hoặc giọng nói, nhận phản hồi sửa lỗi chi tiết và lưu từ vựng/lỗi sai tự động. [x]
 
 ---
 

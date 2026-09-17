@@ -28,13 +28,17 @@ export default function DashboardLayout({
   } else if (pathname?.includes('/mistakes') && pathname?.includes('/practice')) {
     backLabel = 'Back to Mistakes';
     backHref = '/mistakes';
+  } else if (pathname?.includes('/tutor/sessions')) {
+    backLabel = 'Back to Chat';
+    backHref = '/tutor';
   } else if (
     pathname?.includes('/learn') ||
     pathname?.includes('/session') ||
     pathname?.includes('/practice') ||
     pathname?.includes('/vocabulary') ||
     pathname?.includes('/mistakes') ||
-    pathname?.includes('/progress')
+    pathname?.includes('/progress') ||
+    pathname?.includes('/tutor')
   ) {
     backLabel = 'Back to Dashboard';
     backHref = '/home';

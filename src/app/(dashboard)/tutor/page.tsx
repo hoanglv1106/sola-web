@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">AI Tutor</h1>
-      <p className="text-gray-600">Welcome to AI Tutor</p>
-    </div>
-  );
+import React from 'react';
+import { AiTutorChatView } from '@/modules/tutor';
+
+export const metadata = {
+  title: 'AI Tutor - Chat with Maya | SOLA',
+  description: 'Practice real-world English conversations with Maya, your AI English tutor.',
+};
+
+export default function TutorPage() {
+  return <AiTutorChatView />;
 }

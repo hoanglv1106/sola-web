@@ -1,13 +1,16 @@
-export default async function Page({
+import React from 'react';
+import { AiTutorVoicePractice } from '@/modules/tutor';
+
+export const metadata = {
+  title: 'Voice Practice with Maya | SOLA',
+  description: 'Interactive real-time voice coaching and speech practice with AI Tutor Maya.',
+};
+
+export default async function TutorSessionVoicePage({
   params,
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
   const { sessionId } = await params;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Tutor Session</h1>
-      <p className="text-gray-600">ID: {sessionId}</p>
-    </div>
-  );
+  return <AiTutorVoicePractice sessionId={sessionId} />;
 }
