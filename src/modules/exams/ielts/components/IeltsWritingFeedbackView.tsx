@@ -484,6 +484,7 @@ export function IeltsWritingFeedbackView() {
               <button
                 type="button"
                 onClick={() => setActivePromptModal(false)}
+                aria-label="Close prompt modal"
                 className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
               >
                 <X className="w-5 h-5" />
@@ -526,6 +527,7 @@ export function IeltsWritingFeedbackView() {
               <button
                 type="button"
                 onClick={() => setActiveCriterionDetails(null)}
+                aria-label="Close criterion details"
                 className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
               >
                 <X className="w-5 h-5" />

@@ -520,6 +520,7 @@ export function ToeicPracticeTestRunner() {
               <button
                 type="button"
                 onClick={() => setIsEnlarged(false)}
+                aria-label="Close enlarged image"
                 className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
               >
                 <X className="w-5 h-5" />

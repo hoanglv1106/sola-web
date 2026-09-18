@@ -2,29 +2,43 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search, Bell } from 'lucide-react';
+import { ArrowLeft, Search, Bell, Menu } from 'lucide-react';
 import { Avatar } from '@/shared/ui/avatar/Avatar';
 
 export interface AppHeaderProps {
   backHref?: string;
   backLabel?: string;
+  onMenuToggle?: () => void;
 }
 
 export function AppHeader({
   backHref = '/home',
   backLabel = 'Welcome to SOLA',
+  onMenuToggle,
 }: AppHeaderProps) {
   return (
-    <header className="h-20 border-b border-sola-border bg-white/70 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
-      {/* Left section: Back navigation */}
-      <div className="flex items-center gap-3">
+    <header className="h-20 border-b border-sola-border bg-white/70 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20">
+      {/* Left section: Hamburger (mobile) & Back navigation */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onMenuToggle && (
+          <button
+            type="button"
+            onClick={onMenuToggle}
+            aria-label="Toggle navigation menu"
+            className="lg:hidden p-2 -ml-1 sm:-ml-2 rounded-xl text-sola-navy hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sola-orange"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
         {backHref && (
           <Link
             href={backHref}
             className="flex items-center gap-2 text-sm font-medium text-sola-navy-muted hover:text-sola-navy transition-colors py-1 px-2 rounded-lg hover:bg-gray-100/60"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-semibold text-sola-navy">{backLabel}</span>
+            <ArrowLeft className="w-4 h-4 shrink-0" />
+            <span className="font-semibold text-sola-navy truncate max-w-[140px] sm:max-w-none">
+              {backLabel}
+            </span>
           </Link>
         )}
       </div>

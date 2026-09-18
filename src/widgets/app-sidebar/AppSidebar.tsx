@@ -16,6 +16,7 @@ import {
   Users,
   Sun,
   Compass,
+  X,
 } from 'lucide-react';
 
 interface NavItem {
@@ -24,6 +25,12 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
   isSpecial?: boolean;
+}
+
+export interface AppSidebarProps {
+  onClose?: () => void;
+  className?: string;
+  isMobile?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
@@ -38,16 +45,25 @@ const mainNavItems: NavItem[] = [
   { label: 'Community', href: '/community', icon: Users },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ onClose, className, isMobile }: AppSidebarProps) {
   const pathname = usePathname();
   const isAssessment = pathname?.startsWith('/assessment');
 
   return (
-    <aside className="w-64 bg-white border-r border-sola-border min-h-screen flex flex-col justify-between shrink-0 select-none">
+    <aside
+      className={cn(
+        'w-64 bg-white border-r border-sola-border min-h-screen flex flex-col justify-between shrink-0 select-none overflow-y-auto',
+        className
+      )}
+    >
       <div>
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-sola-border/60">
-          <Link href="/home" className="flex items-center gap-3 group">
+        <div className="px-6 py-6 border-b border-sola-border/60 flex items-center justify-between">
+          <Link
+            href="/home"
+            onClick={onClose}
+            className="flex items-center gap-3 group"
+          >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-sola-orange flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
               <Sun className="w-5 h-5 stroke-[2.5]" />
             </div>
@@ -62,6 +78,17 @@ export function AppSidebar() {
               </p>
             </div>
           </Link>
+
+          {isMobile && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close sidebar"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-sola-navy hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Navigation list */}
@@ -76,6 +103,7 @@ export function AppSidebar() {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={onClose}
                 className={cn(
                   'flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                   isActive
@@ -99,6 +127,7 @@ export function AppSidebar() {
             <div className="pt-2">
               <Link
                 href="/assessment/test"
+                onClick={onClose}
                 className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-sola-orange-soft text-sola-orange border border-orange-200/60 shadow-xs"
               >
                 <Compass className="w-5 h-5 text-sola-orange animate-spin" style={{ animationDuration: '10s' }} />

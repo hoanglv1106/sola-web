@@ -62,9 +62,9 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 ├────────────────────────────────────────────────────────────────────────┤
 │ PHASE 4: AI Tutor & Voice Coaching (Items 14 - 16) → AI MVP CHECKPOINT │
 ├────────────────────────────────────────────────────────────────────────┤
-│ PHASE 5: Exam Preparation (IELTS & TOEIC) (Items 17 - 19)             │
+│ PHASE 5: Exam Preparation (IELTS & TOEIC) (Items 17 - 19) [COMPLETED]  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ PHASE 6: Mobile Adaptive, Tests & Polish (Item 20)                    │
+│ PHASE 6: Mobile Adaptive, Tests & Polish (Item 20) [COMPLETED]         │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -202,10 +202,10 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 
 ---
 
-### ⚪ PHASE 6: System Polish, Responsiveness & Testing (Mục 20)
+### 🟢 PHASE 6: System Polish, Responsiveness & Testing (Mục 20) [COMPLETED]
 - **Mục tiêu**: Đảm bảo tiêu chuẩn sản xuất (production-quality), tối ưu hiển thị đa thiết bị và độ tin cậy của mã nguồn.
 - **Checklist**:
-  - [ ] Kiểm thử Responsive trên mọi breakpoint (Desktop >= 1280px, Tablet 768-1279px, Mobile < 768px).
-  - [ ] Viết Unit Tests cho các logic chuyển đổi trạng thái quan trọng (Vocabulary Mastery, Mistake transitions, Voice state machine, Progress calculations).
-  - [ ] Kiểm tra tính tiếp cận (Accessibility - a11y, ARIA labels, bàn phím).
-  - [ ] Chạy `npm run lint`, `npx tsc --noEmit`, `npm run build` không phát sinh lỗi hoặc cảnh báo.
+  - [x] Kiểm thử Responsive trên mọi breakpoint (Desktop >= 1280px, Tablet 768-1279px, Mobile < 768px, Mobile drawer navigation).
+  - [x] Viết Unit Tests cho các logic chuyển đổi trạng thái quan trọng (Vocabulary Mastery, Mistake transitions, Voice state machine, Progress calculations).
+  - [x] Kiểm tra tính tiếp cận (Accessibility - a11y, ARIA labels, bàn phím).
+  - [x] Chạy `npm run lint`, `npx tsc --noEmit`, `npm run build` không phát sinh lỗi hoặc cảnh báo.
