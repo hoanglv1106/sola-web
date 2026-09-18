@@ -1,13 +1,11 @@
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ attemptId: string }>;
-}) {
-  const { attemptId } = await params;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">IELTS Writing Attempt</h1>
-      <p className="text-gray-600">ID: {attemptId}</p>
-    </div>
-  );
+import React from 'react';
+import { IeltsWritingFeedbackView } from '@/modules/exams';
+
+export const metadata = {
+  title: 'IELTS Writing Feedback | SOLA',
+  description: 'AI-evaluated IELTS Task 2 writing feedback with detailed rubric scoring and targeted correction suggestions.',
+};
+
+export default function IeltsWritingPage() {
+  return <IeltsWritingFeedbackView />;
 }

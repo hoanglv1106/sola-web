@@ -1,2 +1,10 @@
-export * as ielts from './ielts/types';
-export * as toeic from './toeic/types';
+export * from './types';
+export * from './components/ExamHeroBanner';
+export * from './components/ExamScoreCards';
+export * from './components/ExamSectionPracticeGrid';
+export * from './components/ExamMockTestsList';
+export * from './components/ExamRecentResults';
+export * from './components/ExamRightSidebar';
+export * from './components/ExamDashboard';
+export * from './ielts/components/IeltsWritingFeedbackView';
+export * from './toeic/components/ToeicPracticeTestRunner';

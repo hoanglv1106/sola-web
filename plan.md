@@ -183,22 +183,22 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
 
 ---
 
-### 🟣 PHASE 5: Exam Preparation Hub (IELTS & TOEIC) (Mục 17 → 19)
+### 🟢 PHASE 5: Exam Preparation Hub (IELTS & TOEIC) (Mục 17 → 19) [COMPLETED]
 - **Mục tiêu**: Mô đun luyện thi chứng chỉ quốc tế chuyên sâu, tái sử dụng các primitives từ lõi luyện tập và chấm điểm.
 - **UI Mappings & Routes**:
-  1. **Item 17: IELTS / TOEIC Dashboard**
+  1. **Item 17: IELTS / TOEIC Dashboard** [x]
      - **UI**: `Image-UI-Ux/IELTS &TOEIC Prep.png`
      - **Route**: `src/app/(dashboard)/exams/page.tsx`
      - **Nội dung**: Tab chuyển đổi IELTS / TOEIC, điểm mục tiêu (7.5) vs điểm dự đoán (6.5), luyện tập theo từng kỹ năng (Listening, Reading, Writing, Speaking), danh sách đề thi thử Mock Test, kết quả thi gần đây.
-  2. **Item 18: IELTS Writing Feedback**
+  2. **Item 18: IELTS Writing Feedback** [x]
      - **UI**: `Image-UI-Ux/IELTS writing feed back.png`
      - **Route**: `src/app/(dashboard)/exams/ielts/writing/[attemptId]/page.tsx`
      - **Nội dung**: Đề bài Task 2, bài viết của học viên kèm highlight lỗi (ngữ pháp, từ vựng, gợi ý khác), bảng chấm điểm 4 tiêu chí chuẩn IELTS (Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range) và kế hoạch cải thiện band điểm.
-  3. **Item 19: TOEIC Practice Test Simulation**
+  3. **Item 19: TOEIC Practice Test Simulation** [x]
      - **UI**: `Image-UI-Ux/topic practice Test.png`
      - **Route**: `src/app/(dashboard)/exams/toeic/tests/[testId]/page.tsx`
      - **Nội dung**: Phòng thi thử mô phỏng Part 1 Photographs (ảnh câu hỏi, audio nghe, 4 lựa chọn A/B/C/D), đồng hồ đếm ngược, nút tạm dừng, đánh dấu xem lại (Review later), bảng điều hướng câu hỏi.
-- **Checkpoint Deliverable**: Hỗ trợ đầy đủ luồng ôn thi chứng chỉ chuẩn quốc tế với chấm điểm và gợi ý cải thiện từ AI.
+- **Checkpoint Deliverable**: Hỗ trợ đầy đủ luồng ôn thi chứng chỉ chuẩn quốc tế với chấm điểm và gợi ý cải thiện từ AI. [x]
 
 ---
 

@@ -1,13 +1,11 @@
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ testId: string }>;
-}) {
-  const { testId } = await params;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">TOEIC Test</h1>
-      <p className="text-gray-600">ID: {testId}</p>
-    </div>
-  );
+import React from 'react';
+import { ToeicPracticeTestRunner } from '@/modules/exams';
+
+export const metadata = {
+  title: 'TOEIC Practice Test Simulation | SOLA',
+  description: 'Practice simulated TOEIC test with interactive photograph questions, timer, and detailed AI guidance.',
+};
+
+export default function ToeicTestPage() {
+  return <ToeicPracticeTestRunner />;
 }

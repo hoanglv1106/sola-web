@@ -1,8 +1,11 @@
-export default function Page() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Exam Preparation</h1>
-      <p className="text-gray-600">Welcome to Exam Preparation</p>
-    </div>
-  );
+import React from 'react';
+import { ExamDashboard } from '@/modules/exams';
+
+export const metadata = {
+  title: 'IELTS & TOEIC Prep | SOLA',
+  description: 'Real practice. Real progress. A brighter you. Master IELTS and TOEIC with AI-guided preparation.',
+};
+
+export default function ExamHubPage() {
+  return <ExamDashboard />;
 }
