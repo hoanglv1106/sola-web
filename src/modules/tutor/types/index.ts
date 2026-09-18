@@ -59,3 +59,4 @@ export interface SpeakingFeedbackData {
   newVocabulary: string[];
   strengths: string[];
 }
+
