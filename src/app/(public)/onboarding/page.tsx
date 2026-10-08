@@ -28,6 +28,7 @@ export default function OnboardingPage() {
   const [studyTime, setStudyTime] = useState<DailyStudyTime>('15_minutes');
   const [targetTimeline, setTargetTimeline] = useState<TargetTimeline>('3_months');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleContinue = () => {
     setIsSubmitting(true);
@@ -45,14 +46,34 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex min-h-screen bg-sola-bg">
-      {/* Sidebar */}
-      <AppSidebar />
+      {/* 1. Desktop Sidebar */}
+      <div className="hidden lg:block shrink-0">
+        <AppSidebar />
+      </div>
 
-      {/* Main viewport */}
+      {/* 2. Mobile Drawer Navigation (< 1024px) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="fixed inset-y-0 left-0 w-64 max-w-[85vw] bg-white shadow-2xl z-10 flex flex-col animate-fade-in">
+            <AppSidebar onClose={() => setMobileMenuOpen(false)} isMobile />
+          </div>
+        </div>
+      )}
+
+      {/* 3. Main viewport */}
       <div className="flex-1 flex flex-col min-w-0">
-        <AppHeader backHref="/home" backLabel="Welcome to SOLA" />
+        <AppHeader
+          backHref="/home"
+          backLabel="Welcome to SOLA"
+          onMenuToggle={() => setMobileMenuOpen((prev) => !prev)}
+        />
 
-        <main className="flex-1 p-6 md:p-8 max-w-[1600px] w-full mx-auto animate-fade-in">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1600px] w-full mx-auto animate-fade-in">
           <div className="flex gap-8 items-start">
             {/* Form column */}
             <div className="flex-1 min-w-0 space-y-8">
@@ -112,3 +133,4 @@ export default function OnboardingPage() {
     </div>
   );
 }
+
