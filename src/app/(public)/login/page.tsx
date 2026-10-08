@@ -1,10 +1,16 @@
+import { Metadata } from 'next';
+import { AuthLayout, LoginForm } from '@/modules/auth';
+
+export const metadata: Metadata = {
+  title: 'Log in to SOLA | Speak a brighter you',
+  description: 'Log in to continue your English learning journey on SOLA.',
+};
+
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-md border">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login to Sola</h1>
-        {/* Login form */}
-      </div>
-    </main>
+    <AuthLayout variant="login">
+      <LoginForm />
+    </AuthLayout>
   );
 }
+
