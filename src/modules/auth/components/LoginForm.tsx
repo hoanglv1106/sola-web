@@ -5,6 +5,34 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { SocialAuthButtons } from './SocialAuthButtons';
+import { writeMockSession } from '@/modules/learner';
+
+/**
+ * Derive a display name for the demo session from the entered email.
+ * Purely cosmetic: this is a mock login, not real authentication.
+ */
+function getDemoDisplayName(email: string): string {
+  const localPart = email.trim().split('@')[0] ?? '';
+  if (!localPart) return 'SOLA Learner';
+  return localPart
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+/**
+ * Honest copy for the demo password-recovery control.
+ *
+ * SOLA has no email backend, so this must never claim a message was sent. It
+ * states the limitation plainly and keeps the label truthful.
+ */
+function buildRecoveryNotice(email: string): string {
+  const target = email.trim();
+  return target
+    ? `Demo build: password recovery is not wired up yet, so no reset link can be sent to ${target}.`
+    : 'Demo build: password recovery is not wired up yet, so no reset link can be sent. Enter your email to see it echoed here.';
+}
 
 export function LoginForm() {
   const router = useRouter();
@@ -14,6 +42,7 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
 
   const handleDemoFill = () => {
     setEmail('alex@example.com');
@@ -34,15 +63,18 @@ export function LoginForm() {
     }
     setIsLoading(true);
     setTimeout(() => {
-      try {
-        sessionStorage.setItem(
-          'sola_auth_user',
-          JSON.stringify({ name: 'Alex Johnson', email })
-        );
-        if (rememberMe) {
+      // Mock login: only the display profile is persisted, never the password.
+      writeMockSession({
+        name: getDemoDisplayName(email),
+        email: email.trim(),
+      });
+      if (rememberMe) {
+        try {
           localStorage.setItem('sola_remember_email', email);
+        } catch {
+          // Remember-me is a convenience only; blocked storage must not fail login.
         }
-      } catch {}
+      }
       setIsLoading(false);
       router.push('/home');
     }, 500);
@@ -85,6 +117,15 @@ export function LoginForm() {
           {error}
         </div>
       )}
+      {recoveryNotice && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-4 p-3 rounded-xl bg-orange-50 border border-orange-200 text-orange-700 text-xs font-medium"
+        >
+          {recoveryNotice}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
@@ -100,7 +141,10 @@ export function LoginForm() {
               type="text"
               autoComplete="username"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setRecoveryNotice(null);
+              }}
               placeholder="you@example.com"
               className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#fa5b2d] focus:ring-2 focus:ring-[#fa5b2d]/20 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
             />
@@ -146,12 +190,13 @@ export function LoginForm() {
             />
             <span className="text-xs sm:text-sm text-slate-600 font-normal">Remember me</span>
           </label>
-          <span
-            onClick={() => alert('A password reset link will be sent to ' + (email || 'your email address'))}
-            className="text-xs sm:text-sm text-[#fa5b2d] hover:text-[#e04f24] font-medium hover:underline cursor-pointer transition-colors"
+          <button
+            type="button"
+            onClick={() => setRecoveryNotice(buildRecoveryNotice(email))}
+            className="text-xs sm:text-sm text-[#fa5b2d] hover:text-[#e04f24] font-medium hover:underline cursor-pointer transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-sola-orange"
           >
             Forgot password?
-          </span>
+          </button>
         </div>
 
         <button

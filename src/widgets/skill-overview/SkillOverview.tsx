@@ -64,7 +64,7 @@ export function SkillOverview() {
 
             <Link
               href="/mistakes"
-              className="w-7 h-7 rounded-full bg-white border border-amber-200 flex items-center justify-center text-amber-800 hover:bg-amber-50 transition-colors shadow-2xs"
+              className="w-7 h-7 rounded-full bg-white border border-amber-200 flex items-center justify-center text-amber-800 hover:bg-amber-50 transition-colors shadow-sm"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>

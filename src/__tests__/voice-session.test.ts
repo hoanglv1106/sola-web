@@ -1,66 +1,11 @@
 import { describe, it, expect } from 'vitest';
-
-export type VoiceSessionState =
-  | 'idle'
-  | 'listening'
-  | 'processing'
-  | 'ai_speaking'
-  | 'paused'
-  | 'completed';
-
-export interface VoiceSessionEvent {
-  type:
-    | 'START'
-    | 'STOP_SPEAKING'
-    | 'AI_RESPONSE_READY'
-    | 'AI_FINISH_SPEAKING'
-    | 'PAUSE'
-    | 'RESUME'
-    | 'END';
-}
-
-export function voiceSessionReducer(
-  state: VoiceSessionState,
-  event: VoiceSessionEvent
-): VoiceSessionState {
-  if (event.type === 'END') return 'completed';
-
-  switch (state) {
-    case 'idle':
-      if (event.type === 'START') return 'listening';
-      return state;
-
-    case 'listening':
-      if (event.type === 'STOP_SPEAKING') return 'processing';
-      if (event.type === 'PAUSE') return 'paused';
-      return state;
-
-    case 'processing':
-      if (event.type === 'AI_RESPONSE_READY') return 'ai_speaking';
-      return state;
-
-    case 'ai_speaking':
-      if (event.type === 'AI_FINISH_SPEAKING') return 'listening';
-      if (event.type === 'PAUSE') return 'paused';
-      return state;
-
-    case 'paused':
-      if (event.type === 'RESUME') return 'listening';
-      return state;
-
-    case 'completed':
-    default:
-      return state;
-  }
-}
-
-export function formatSessionDuration(seconds: number): string {
-  const mins = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, '0');
-  const secs = (seconds % 60).toString().padStart(2, '0');
-  return `${mins}:${secs}`;
-}
+// Production domain logic (no test-local reimplementation).
+import type { VoiceSessionState } from '@/modules/tutor/model';
+import {
+  voiceSessionReducer,
+  formatSessionDuration,
+  isVoiceTimerRunning,
+} from '@/modules/tutor/model';
 
 describe('Voice Tutor State Machine & Session Logic', () => {
   it('should transition through standard voice conversation cycle', () => {
@@ -99,5 +44,41 @@ describe('Voice Tutor State Machine & Session Logic', () => {
     expect(formatSessionDuration(12)).toBe('00:12');
     expect(formatSessionDuration(65)).toBe('01:05');
     expect(formatSessionDuration(600)).toBe('10:00');
+  });
+});
+
+describe('Voice Tutor illegal transitions & timer ownership', () => {
+  it('should ignore events that are illegal for the current state', () => {
+    expect(voiceSessionReducer('idle', { type: 'AI_RESPONSE_READY' })).toBe('idle');
+    expect(voiceSessionReducer('idle', { type: 'RESUME' })).toBe('idle');
+    expect(voiceSessionReducer('processing', { type: 'START' })).toBe('processing');
+    expect(voiceSessionReducer('processing', { type: 'PAUSE' })).toBe('processing');
+    expect(voiceSessionReducer('completed', { type: 'START' })).toBe('completed');
+    expect(voiceSessionReducer('completed', { type: 'RESUME' })).toBe('completed');
+  });
+
+  it('should resume into listening from paused but not into ai_speaking', () => {
+    expect(voiceSessionReducer('paused', { type: 'RESUME' })).toBe('listening');
+    expect(voiceSessionReducer('paused', { type: 'AI_FINISH_SPEAKING' })).toBe('paused');
+  });
+
+  it('should end the session from any active state', () => {
+    for (const state of ['idle', 'listening', 'processing', 'ai_speaking', 'paused', 'completed'] as const) {
+      expect(voiceSessionReducer(state, { type: 'END' })).toBe('completed');
+    }
+  });
+
+  it('should only run the session timer for active listening states', () => {
+    expect(isVoiceTimerRunning('listening')).toBe(true);
+    expect(isVoiceTimerRunning('ai_speaking')).toBe(true);
+    expect(isVoiceTimerRunning('paused')).toBe(false);
+    expect(isVoiceTimerRunning('idle')).toBe(false);
+    expect(isVoiceTimerRunning('processing')).toBe(false);
+    expect(isVoiceTimerRunning('completed')).toBe(false);
+  });
+
+  it('should clamp negative and non-finite durations', () => {
+    expect(formatSessionDuration(-10)).toBe('00:00');
+    expect(formatSessionDuration(Number.NaN)).toBe('00:00');
   });
 });

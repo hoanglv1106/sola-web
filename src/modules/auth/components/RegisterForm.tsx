@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { SocialAuthButtons } from './SocialAuthButtons';
 import { PasswordRequirements } from './PasswordRequirements';
-import { validatePasswordRules } from '../types';
+import { validatePasswordRules, getPasswordRuleError } from '../types';
+import { writeMockSession } from '@/modules/learner';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -42,8 +43,9 @@ export function RegisterForm() {
       setError('Please enter a valid email address');
       return;
     }
-    if (!passwordRules.hasMinLength) {
-      setError('Password must be at least 8 characters');
+    // Enforce every rule the shared validator defines, not just the length rule.
+    if (!passwordRules.isValid) {
+      setError(getPasswordRuleError(passwordRules));
       return;
     }
 
@@ -53,18 +55,13 @@ export function RegisterForm() {
   const handleCompleteRegistration = () => {
     setIsLoading(true);
     setTimeout(() => {
-      try {
-        sessionStorage.setItem(
-          'sola_auth_user',
-          JSON.stringify({
-            name: `${firstName} ${lastName}`.trim(),
-            email,
-            goal,
-            dailyMinutes,
-            registeredAt: new Date().toISOString(),
-          })
-        );
-      } catch {}
+      writeMockSession({
+        name: `${firstName} ${lastName}`.trim(),
+        email: email.trim(),
+        goal,
+        dailyMinutes,
+        registeredAt: new Date().toISOString(),
+      });
       setIsLoading(false);
       router.push('/home');
     }, 600);

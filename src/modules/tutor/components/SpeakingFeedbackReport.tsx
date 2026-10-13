@@ -138,7 +138,7 @@ export function SpeakingFeedbackReport({ sessionId = 'meeting-idea' }: SpeakingF
           <img
             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
             alt="Maya"
-            className="w-14 h-14 rounded-full object-cover border-2 border-amber-300 shadow-2xs shrink-0"
+            className="w-14 h-14 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0"
           />
 
           <div className="space-y-2 flex-1">
@@ -217,7 +217,7 @@ export function SpeakingFeedbackReport({ sessionId = 'meeting-idea' }: SpeakingF
           {feedback.skills.map((sk) => (
             <div
               key={sk.key}
-              className="p-4 rounded-2xl bg-gray-50/60 border border-gray-100 flex flex-col items-center text-center space-y-3 hover:shadow-xs transition-shadow"
+              className="p-4 rounded-2xl bg-gray-50/60 border border-gray-100 flex flex-col items-center text-center space-y-3 hover:shadow-sm transition-shadow"
             >
               <div className="flex items-center gap-1.5 text-xs font-extrabold text-sola-navy">
                 {sk.key === 'fluency' && <Mic className="w-4 h-4 text-sola-orange" />}

@@ -86,7 +86,7 @@ export function WeeklyPlan() {
         </div>
 
         {/* Right header inspirational banner */}
-        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-xs">
+        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-sm">
           <div>
             <p className="font-handwriting text-base font-bold text-amber-950 italic flex items-center gap-1">
               <span>Consistent effort creates a brighter you.</span>
@@ -249,7 +249,7 @@ export function WeeklyPlan() {
                   </div>
 
                   {isCompleted && (
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-sola-green text-white shadow-2xs">
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-sola-green text-white shadow-sm">
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                   )}
@@ -289,7 +289,7 @@ export function WeeklyPlan() {
                     <Button
                       size="sm"
                       onClick={() => router.push('/learn/lessons/rather-vs-prefer')}
-                      className="w-full text-xs font-bold py-1.5 shadow-xs"
+                      className="w-full text-xs font-bold py-1.5 shadow-sm"
                     >
                       Start lesson
                     </Button>
@@ -375,7 +375,7 @@ export function WeeklyPlan() {
             </ul>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-white/80 border border-amber-200/60 shadow-2xs">
+          <div className="p-3.5 rounded-xl bg-white/80 border border-amber-200/60 shadow-sm">
             <p className="text-[11px] text-amber-900 leading-relaxed font-medium">
               💡 These skills will help you handle everyday conversations more easily and feel more confident in your IELTS speaking test.
             </p>

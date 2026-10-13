@@ -21,7 +21,7 @@ const topLearners = [
 export default function CommunityPage() {
   return (
     <div className="space-y-8 pb-16">
-      <div className="relative rounded-3xl bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 shadow-xs">
+      <div className="relative rounded-3xl bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 shadow-sm">
         <div className="space-y-2">
           <span className="text-xs font-bold text-sola-orange uppercase tracking-wider">Community</span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-sola-navy">SOLA Learning Community</h1>

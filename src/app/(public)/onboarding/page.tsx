@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   OnboardingStepper,
@@ -18,6 +18,9 @@ import { Button } from '@/shared/ui/button/Button';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { AppSidebar } from '@/widgets/app-sidebar/AppSidebar';
 import { AppHeader } from '@/widgets/app-header/AppHeader';
+import { useModalA11y } from '@/shared/hooks/use-drawer-focus';
+
+const MOBILE_DRAWER_ID = 'sola-onboarding-navigation';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -29,6 +32,30 @@ export default function OnboardingPage() {
   const [targetTimeline, setTargetTimeline] = useState<TargetTimeline>('3_months');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const closeMenu = useCallback(() => setMobileMenuOpen(false), []);
+
+  const { dialogRef } = useModalA11y({
+    isOpen: mobileMenuOpen,
+    onClose: closeMenu,
+    triggerRef: menuTriggerRef,
+    // Reversible background isolation: siblings of the drawer (header + main)
+    // are made inert while the drawer is open and restored verbatim on close.
+    backgroundRoot: shellRef,
+  });
+
+  // Close the drawer when the viewport reaches the desktop breakpoint.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleChange = () => {
+      if (mediaQuery.matches) setMobileMenuOpen(false);
+    };
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [mobileMenuOpen]);
 
   const handleContinue = () => {
     setIsSubmitting(true);
@@ -45,7 +72,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-sola-bg">
+    <div className="flex min-h-screen bg-sola-bg" ref={shellRef}>
       {/* 1. Desktop Sidebar */}
       <div className="hidden lg:block shrink-0">
         <AppSidebar />
@@ -53,14 +80,22 @@ export default function OnboardingPage() {
 
       {/* 2. Mobile Drawer Navigation (< 1024px) */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div
+          id={MOBILE_DRAWER_ID}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          tabIndex={-1}
+          className="fixed inset-0 z-50 lg:hidden"
+        >
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-200"
-            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-200"
+            onClick={closeMenu}
             aria-hidden="true"
           />
           <div className="fixed inset-y-0 left-0 w-64 max-w-[85vw] bg-white shadow-2xl z-10 flex flex-col animate-fade-in">
-            <AppSidebar onClose={() => setMobileMenuOpen(false)} isMobile />
+            <AppSidebar onClose={closeMenu} isMobile />
           </div>
         </div>
       )}
@@ -71,6 +106,9 @@ export default function OnboardingPage() {
           backHref="/home"
           backLabel="Welcome to SOLA"
           onMenuToggle={() => setMobileMenuOpen((prev) => !prev)}
+          menuControlsId={MOBILE_DRAWER_ID}
+          isMenuOpen={mobileMenuOpen}
+          menuTriggerRef={menuTriggerRef}
         />
 
         <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1600px] w-full mx-auto animate-fade-in">

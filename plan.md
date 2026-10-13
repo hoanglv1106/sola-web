@@ -209,3 +209,76 @@ Toàn bộ 20 ảnh UI/UX trong thư mục `Image-UI-Ux/` được phân bổ ch
   - [x] Viết Unit Tests cho các logic chuyển đổi trạng thái quan trọng (Vocabulary Mastery, Mistake transitions, Voice state machine, Progress calculations).
   - [x] Kiểm tra tính tiếp cận (Accessibility - a11y, ARIA labels, bàn phím).
   - [x] Chạy `npm run lint`, `npx tsc --noEmit`, `npm run build` không phát sinh lỗi hoặc cảnh báo.
+---
+
+## Phase 6 — Bàn Giao Giới Hạn (Limited Handoff)
+
+> **Trạng thái: KHÔNG PHẢI QA-PASS toàn bộ.**
+> User đã yêu cầu giảm test để tiết kiệm quota và **bỏ review vòng 2**. Vòng review thứ hai
+> (t10) đã bị **waive**, không phải passed. Mọi tuyên bố dưới đây chỉ dựa trên evidence
+> thực sự đã chạy được.
+
+### 1. Lịch sử verification/review (phân biệt rõ với các fix sau này)
+
+| Bước | Kết quả | Ghi chú |
+|---|---|---|
+| t1 baseline + acceptance | PASS | HEAD `95ca58e4`; lint/typecheck/test/build exit 0 |
+| t2 cleanup theo domain | PASS (6/6) | 95 file source/test trong `src` + package.json + lock + vitest.config.mjs |
+| t3 QA độc lập | **NEEDS_REVISION** | 7 finding QA-1..QA-7 |
+| t6 repair QA-1..QA-7 | PASS (7/7) | 5 gate xanh trên cây lúc đó |
+| t7 reverification độc lập | **NEEDS_REVISION** | 4 finding RV1..RV4 còn hở |
+| t9 repair-round-2 | Hoàn tất (limited) | RV1..RV4 đã sửa; xem mục 2 |
+| t10 review vòng 2 | **WAIVED** | Bỏ theo yêu cầu user — KHÔNG claim approval |
+
+**Quan trọng:** các kết quả `NEEDS_REVISION` của t3/t7 thuộc về cây mã **trước** khi t6/t9 sửa.
+Chúng được ghi lại ở đây để không bị hiểu sai thành đánh giá trên cây hiện tại, và cũng **không**
+bị coi là đã được giải quyết: vì review vòng 2 bị bỏ, phần sửa của t9 **chưa qua thẩm định độc lập**.
+
+### 2. Các sửa đổi của t9 (RV1..RV4)
+
+- **RV1 — Vocabulary review dùng đúng ranh giới typed.** `VocabularyReviewSession` không còn
+  import trực tiếp `mockReviewQueueWords` (đã kiểm bằng grep, 0 tham chiếu). Words/queue/content
+  nay đi qua `useDomainResource(fetchVocabularyReviewQueue, { isEmpty })` với đủ trạng thái
+  loading / error (+Try again) / empty, và phần overlay tiến độ được áp lên danh sách **đã load**.
+- **RV2 — Phân biệt payload cùng số lượng trên CÙNG một instance đang mount.** Trước đây test
+  unmount rồi mount lại nên chỉ chứng minh được "mount mới thì load mới". Nay một instance được
+  giữ nguyên và điều khiển bằng control thật: A → Refresh lỗi → Retry → B (A và B cùng id/thứ tự/độ
+  dài, chỉ khác `userAnswer`).
+  - Dashboard trước đó **không có** đường reload khi đang hiển thị dữ liệu, nên đã thêm nút
+    **Refresh** nhỏ nhất vào toolbar sẵn có (`aria-label="Refresh your mistake notebook"`), nối
+    vào `resource.reload`; không thêm metric mới, không redesign.
+  - **Chính sách dữ liệu:** giữ lại dữ liệu tốt cuối cùng khi refresh lỗi là **hợp lệ**, miễn là
+    error + Retry vẫn hiển thị. Vì vậy test chỉ yêu cầu A **biến mất sau khi B resolve**, và yêu cầu
+    stats cũ không được hiển thị như số liệu hiện tại.
+  - **Mutation proof:** thay lại guard cũ theo count vào một bản copy tạm trong scope thì test
+    **fail đúng** ở assertion `toContain('BRAVO answer for mis-1')` (không phải lỗi compile).
+    Bản gốc được khôi phục byte-exact (`sha256sum -c` OK).
+- **RV3 — Chính sách payload bắt buộc ở ranh giới typed.** Thêm `src/shared/api/require-payload.ts`
+  (`requirePayload` / `requireShape`): 204 / 205 / body rỗng hoặc shape sai trở thành `ApiError`
+  có kiểu, thay vì bị chuẩn hoá thành "empty success" giả. Hợp đồng chung của `apiClient`
+  (204/205/rỗng → `undefined`) được **giữ nguyên** và có test riêng.
+- **RV4 — Loader phản ứng theo resource key.** `use-domain-resource` nhận `resourceKey`: đổi key
+  thì chạy lại loader, xoá `data` cũ và **abort** request đang bay (AbortController xuyên qua
+  `fetchMistakePractice` → `fetchMistakeDrill` → `apiClient`). Runner được key theo `mistakeId`.
+
+### 3. Điều CHƯA được xác minh (không được coi là đã đạt)
+
+1. **`npm run lint` và `npm run build` CHƯA chạy lại** trên cây hiện tại sau các sửa của t9.
+   (Chúng từng xanh ở vòng t6, nhưng đó là cây khác.)
+2. **Full e2e chưa chạy lại** sau khi thêm spec mới; chỉ có các lần chạy focused + lần
+   35 passed / 7 skipped trước đó. 7 skip là do phân tách theo viewport, và bản desktop
+   **có thực sự chạy** ở cả hai spec drawer.
+3. **Đổi id phía client giữ nguyên instance trong browser thật CHƯA được chứng minh** — Next
+   routing có thể tự remount. Phần này chỉ có regression ở tầng DOM; ghi nhận là **giới hạn**.
+4. **`npm audit`**: 14 lỗ hổng tồn tại từ trước (3 moderate / 11 high), ngoài phạm vi, chưa xử lý.
+5. Cảnh báo tồn tại từ trước, chưa xử lý: `next lint` deprecated; `eslint.config.js`
+   báo `MODULE_TYPELESS_PACKAGE_JSON`.
+6. **Bằng chứng hình ảnh có giới hạn:** ảnh chụp là `test-results/onboarding-drawer-*/drawer-open.png`
+   (mobile + tablet) và `.../desktop-no-isolation.png`. Đây là ảnh chụp trạng thái để đối chiếu
+   thủ công — **không có so sánh pixel** và không có ngưỡng thị giác tự động nào được thiết lập.
+
+### 4. Trạng thái bàn giao
+
+- Bàn giao **cây đã sửa**, kèm tài liệu trung thực này. **Không** commit / push / deploy.
+- HEAD vẫn là `95ca58e40204d1917ad2ecfc56f2b9c6be3c3dd0`.
+- Vì review vòng 2 bị bỏ, **không** có phê duyệt độc lập cho các sửa của t9.

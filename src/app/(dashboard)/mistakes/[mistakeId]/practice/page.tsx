@@ -11,6 +11,7 @@ export default async function PracticeMistakePage({
 }: {
   params: Promise<{ mistakeId: string }>;
 }) {
-  await params; // Ensure params Promise is resolved in Next.js 15
-  return <PracticeMistakeRunner />;
+  // Next.js 15: params is a Promise and must be awaited before use.
+  const { mistakeId } = await params;
+  return <PracticeMistakeRunner mistakeId={mistakeId} />;
 }

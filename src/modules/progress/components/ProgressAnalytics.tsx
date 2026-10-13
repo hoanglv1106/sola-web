@@ -26,6 +26,7 @@ import {
   mockDailyGoalProgress,
 } from '@/mocks/progress.mock';
 import { Card } from '@/shared/ui/card/Card';
+import { computeDailyGoalBasis } from '../model';
 import { Button } from '@/shared/ui/button/Button';
 import { ProgressRing } from '@/shared/ui/progress/ProgressRing';
 import { cn } from '@/shared/lib/cn';
@@ -33,6 +34,13 @@ import { cn } from '@/shared/lib/cn';
 export function ProgressAnalytics() {
   const router = useRouter();
   const [selectedTimeRange, setSelectedTimeRange] = useState('Last 4 weeks');
+
+  // Goal dial is derived by the shared progress model (zero-target safe).
+  const dailyGoal = computeDailyGoalBasis({
+    completedItems: mockDailyGoalProgress.completedItems,
+    targetItems: mockDailyGoalProgress.targetItems,
+    streakDays: mockDailyGoalProgress.streakDays,
+  });
 
   // SVG Chart Dimensions
   const svgWidth = 560;
@@ -242,7 +250,7 @@ export function ProgressAnalytics() {
                       <span className="font-extrabold text-sola-navy">
                         {skill.score}%
                       </span>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-1.5 py-0.2 rounded-md">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded-md">
                         +{skill.deltaPct}%
                       </span>
                     </div>
@@ -267,7 +275,7 @@ export function ProgressAnalytics() {
                 </div>
               </div>
 
-              <div className="font-handwriting text-base font-bold text-amber-950 italic px-3 py-1 rounded-full bg-white/80 border border-amber-200/60 shadow-2xs">
+              <div className="font-handwriting text-base font-bold text-amber-950 italic px-3 py-1 rounded-full bg-white/80 border border-amber-200/60 shadow-sm">
                 You&apos;re doing amazing! ❤️
               </div>
             </div>
@@ -301,7 +309,7 @@ export function ProgressAnalytics() {
               {mockProgressReviewItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-2xl border border-sola-border hover:border-orange-200 bg-white flex flex-col justify-between space-y-3 transition-all hover:shadow-xs"
+                  className="p-4 rounded-2xl border border-sola-border hover:border-orange-200 bg-white flex flex-col justify-between space-y-3 transition-all hover:shadow-sm"
                 >
                   <div className="space-y-2">
                     <div
@@ -425,7 +433,7 @@ export function ProgressAnalytics() {
             <div className="flex items-center gap-4">
               <div className="relative shrink-0">
                 <ProgressRing
-                  value={(mockDailyGoalProgress.completedItems / mockDailyGoalProgress.targetItems) * 100}
+                  value={dailyGoal.percentage}
                   size={74}
                   strokeWidth={7}
                   color="orange"
@@ -446,7 +454,7 @@ export function ProgressAnalytics() {
                   A little review today makes a big difference tomorrow. ❤️
                 </p>
                 <p className="text-[11px] text-sola-text-secondary">
-                  Complete today&apos;s review to keep your streak!
+                  {dailyGoal.streakDays}-day streak — complete today&apos;s review to keep it!
                 </p>
               </div>
             </div>

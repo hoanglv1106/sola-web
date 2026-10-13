@@ -87,7 +87,7 @@ export function IeltsWritingFeedbackView() {
       </nav>
 
       {/* 2. Hero Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 shadow-xs">
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 shadow-sm">
         <div className="absolute -top-16 -right-12 w-64 h-64 rounded-full bg-orange-300/25 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -276,7 +276,7 @@ export function IeltsWritingFeedbackView() {
                     onClick={() => handleCorrectionClick(corr.id)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-sola-orange bg-orange-50/40 shadow-xs'
+                        ? 'border-sola-orange bg-orange-50/40 shadow-sm'
                         : 'border-gray-100 hover:border-orange-200/70 bg-white'
                     }`}
                   >
@@ -340,7 +340,7 @@ export function IeltsWritingFeedbackView() {
                   className="p-3 rounded-2xl bg-[#fafafa] border border-gray-100 hover:border-orange-200 transition-colors flex items-start gap-3.5"
                 >
                   {/* Score circle */}
-                  <div className="w-12 h-12 rounded-full bg-white border-2 border-orange-400/80 shadow-2xs flex items-center justify-center font-extrabold text-base text-sola-navy shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-white border-2 border-orange-400/80 shadow-sm flex items-center justify-center font-extrabold text-base text-sola-navy shrink-0">
                     {crit.score.toFixed(1)}
                   </div>
 
@@ -367,10 +367,10 @@ export function IeltsWritingFeedbackView() {
           </Card>
 
           {/* Card 2: Maya Tutor Card */}
-          <Card className="p-5 sm:p-6 space-y-4 bg-gradient-to-b from-[#fff7ef] to-[#faedd9] border-amber-200/80 shadow-xs relative overflow-hidden">
+          <Card className="p-5 sm:p-6 space-y-4 bg-gradient-to-b from-[#fff7ef] to-[#faedd9] border-amber-200/80 shadow-sm relative overflow-hidden">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-xs bg-amber-100">
+                <div className="relative w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-sm bg-amber-100">
                   <Image
                     src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
                     alt="Maya AI English Tutor"
@@ -397,7 +397,7 @@ export function IeltsWritingFeedbackView() {
             </div>
 
             {/* Speech bubble */}
-            <div className="p-4 rounded-2xl bg-white border border-orange-200/60 shadow-2xs text-xs sm:text-sm text-sola-navy leading-relaxed relative">
+            <div className="p-4 rounded-2xl bg-white border border-orange-200/60 shadow-sm text-xs sm:text-sm text-sola-navy leading-relaxed relative">
               <p>&ldquo;{attempt.tutorFeedback.message}&rdquo;</p>
             </div>
 
@@ -475,7 +475,7 @@ export function IeltsWritingFeedbackView() {
 
       {/* Prompt Modal */}
       {activePromptModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-xl border border-amber-200">
             <div className="flex items-center justify-between">
               <h4 className="font-bold text-base text-sola-navy">
@@ -513,7 +513,7 @@ export function IeltsWritingFeedbackView() {
 
       {/* Criterion Details Modal */}
       {activeCriterionDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-xl border border-amber-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

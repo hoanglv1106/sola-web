@@ -34,7 +34,7 @@ export function AiTutorPanel() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
         {/* Floating speech bubble */}
-        <div className="relative z-10 m-3 p-3.5 rounded-xl bg-white/95 backdrop-blur-xs border border-amber-200/60 shadow-md">
+        <div className="relative z-10 m-3 p-3.5 rounded-xl bg-white/95 backdrop-blur-sm border border-amber-200/60 shadow-md">
           <p className="text-xs font-medium text-sola-navy leading-relaxed">
             Let&apos;s practice speaking together! I&apos;ll give you real-time feedback and help you sound more natural.
           </p>
@@ -60,7 +60,7 @@ export function AiTutorPanel() {
         <button
           type="button"
           onClick={() => router.push('/tutor')}
-          className="w-full py-3 px-4 rounded-xl border border-sola-orange text-sola-orange hover:bg-sola-orange-soft font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-2xs hover:shadow-xs group"
+          className="w-full py-3 px-4 rounded-xl border border-sola-orange text-sola-orange hover:bg-sola-orange-soft font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-sm group"
         >
           <span>Chat with Maya</span>
           <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

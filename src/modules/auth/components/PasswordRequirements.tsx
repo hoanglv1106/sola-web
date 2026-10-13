@@ -34,7 +34,7 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           {item.satisfied ? (
-            <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs transition-colors">
+            <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm transition-colors">
               <Check className="w-2.5 h-2.5 stroke-[3]" />
             </span>
           ) : (

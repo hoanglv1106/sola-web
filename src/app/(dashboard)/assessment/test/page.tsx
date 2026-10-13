@@ -63,7 +63,7 @@ export default function PlacementTestPage() {
         </div>
 
         {/* Right header inspirational badge */}
-        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border border-amber-200/60 shadow-xs">
+        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border border-amber-200/60 shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-sola-orange">
             <Sparkles className="w-5 h-5 text-sola-orange" />
           </div>

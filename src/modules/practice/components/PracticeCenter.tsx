@@ -81,7 +81,7 @@ export function PracticeCenter() {
   return (
     <div className="space-y-8 pb-16">
       {/* 1. Header Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 lg:p-10 shadow-xs">
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 lg:p-10 shadow-sm">
         {/* Soft background sunrise blobs */}
         <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-orange-300/30 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full bg-amber-200/30 blur-2xl pointer-events-none" />
@@ -108,13 +108,13 @@ export function PracticeCenter() {
               More practice, A brighter you
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-200/70 text-amber-900 border border-amber-300/60 shadow-xs">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-200/70 text-amber-900 border border-amber-300/60 shadow-sm">
                 Practice More
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-200/70 text-orange-900 border border-orange-300/60 shadow-xs">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-200/70 text-orange-900 border border-orange-300/60 shadow-sm">
                 Build Confidence
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300/60 shadow-xs">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300/60 shadow-sm">
                 Brighter Tomorrow
               </span>
             </div>
@@ -240,7 +240,7 @@ export function PracticeCenter() {
         {/* Right 4 cols: Small motivation & Weekly practice summary */}
         <div className="lg:col-span-4 space-y-4">
           {/* Motivation card */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/60 shadow-xs relative overflow-hidden">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/60 shadow-sm relative overflow-hidden">
             <div className="relative z-10">
               <p className="font-handwriting text-lg font-bold text-amber-950 italic">
                 Small practice steps create big opportunities. ❤️
@@ -306,7 +306,7 @@ export function PracticeCenter() {
                     className={cn(
                       'w-6 h-6 rounded-full flex items-center justify-center transition-all',
                       d.completed
-                        ? 'bg-sola-orange text-white shadow-xs'
+                        ? 'bg-sola-orange text-white shadow-sm'
                         : 'border border-gray-200 bg-white text-transparent'
                     )}
                   >

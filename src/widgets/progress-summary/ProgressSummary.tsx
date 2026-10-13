@@ -80,7 +80,7 @@ export function ProgressSummary() {
                 className={cn(
                   'w-6 h-6 rounded-full flex items-center justify-center text-[10px] transition-colors',
                   w.active
-                    ? 'bg-sola-orange text-white shadow-xs'
+                    ? 'bg-sola-orange text-white shadow-sm'
                     : 'border border-gray-200 bg-gray-50 text-transparent'
                 )}
               >
@@ -92,7 +92,7 @@ export function ProgressSummary() {
       </Card>
 
       {/* 3. Motivational Landscape Card */}
-      <div className="flex-1 p-5 rounded-2xl bg-gradient-to-br from-[#fff7ec] via-[#fef3e3] to-[#fbebd4] border border-amber-200/60 shadow-xs flex flex-col justify-between relative overflow-hidden min-h-[120px]">
+      <div className="flex-1 p-5 rounded-2xl bg-gradient-to-br from-[#fff7ec] via-[#fef3e3] to-[#fbebd4] border border-amber-200/60 shadow-sm flex flex-col justify-between relative overflow-hidden min-h-[120px]">
         <div className="space-y-1 relative z-10">
           <p className="font-serif italic text-sm text-amber-950 font-medium leading-relaxed">
             &ldquo;A little progress every day leads to big changes.&rdquo;

@@ -10,7 +10,7 @@ export function OnboardingDecorativePanel() {
 
       {/* Top quote */}
       <div className="relative z-10 space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-amber-200/50 text-xs font-bold text-amber-800 shadow-xs">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-amber-200/50 text-xs font-bold text-amber-800 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-sola-orange" />
           <span>SOLA Philosophy</span>
         </div>
@@ -23,7 +23,7 @@ export function OnboardingDecorativePanel() {
 
       {/* Center artwork: Stack of study books & window view representation */}
       <div className="relative z-10 my-8 flex flex-col items-center">
-        <div className="w-full max-w-[220px] p-5 rounded-2xl bg-white/70 backdrop-blur-xs border border-amber-200/50 shadow-sm flex flex-col items-center text-center space-y-2">
+        <div className="w-full max-w-[220px] p-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50 shadow-sm flex flex-col items-center text-center space-y-2">
           <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-sola-orange mb-1">
             <BookOpen className="w-6 h-6" />
           </div>

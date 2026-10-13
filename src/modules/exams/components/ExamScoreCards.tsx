@@ -67,7 +67,7 @@ export function ExamScoreCards({ scoreSummary }: ExamScoreCardsProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-xs font-bold shadow-2xs">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-xs font-bold shadow-sm">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>{scoreSummary.changeText}</span>
           </div>

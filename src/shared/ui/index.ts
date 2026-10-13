@@ -5,3 +5,4 @@ export * from './badge/Badge';
 export * from './progress/Progress';
 export * from './progress/ProgressRing';
 export * from './avatar/Avatar';
+export * from './selection/SelectionGroup';

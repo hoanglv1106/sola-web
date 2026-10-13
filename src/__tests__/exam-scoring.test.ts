@@ -1,35 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { ToeicQuestion, RubricCriterion } from '@/modules/exams/types';
-
-export function formatTimeSeconds(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-export function scoreToeicTest(
-  questions: ToeicQuestion[],
-  userAnswers: Record<string, 'A' | 'B' | 'C' | 'D'>
-): { correctCount: number; totalCount: number; percentage: number } {
-  if (questions.length === 0) {
-    return { correctCount: 0, totalCount: 0, percentage: 0 };
-  }
-
-  const correctCount = questions.reduce((acc, q) => {
-    return userAnswers[q.id] === q.correctAnswer ? acc + 1 : acc;
-  }, 0);
-
-  const percentage = Math.round((correctCount / questions.length) * 100);
-  return { correctCount, totalCount: questions.length, percentage };
-}
-
-export function calculateIeltsOverallBand(criteria: RubricCriterion[]): number {
-  if (criteria.length === 0) return 0;
-  const sum = criteria.reduce((acc, c) => acc + c.score, 0);
-  const rawAvg = sum / criteria.length;
-  // IELTS rounding to nearest 0.5
-  return Math.round(rawAvg * 2) / 2;
-}
+import { ToeicQuestion } from '@/modules/exams/types';
+// Production domain logic (no test-local reimplementation).
+import {
+  formatTimeSeconds,
+  scoreToeicTest,
+  tickTestClock,
+  finalizeTestClock,
+  canMutateAnswers,
+  type TestClockState,
+} from '@/modules/exams/toeic/model';
 
 describe('Exam Scoring & TOEIC Engine Logic', () => {
   it('should format seconds to MM:SS string correctly', () => {
@@ -96,23 +75,102 @@ describe('Exam Scoring & TOEIC Engine Logic', () => {
     expect(result.percentage).toBe(75);
   });
 
-  it('should calculate IELTS overall band score rounded to nearest half band', () => {
-    const rubric: RubricCriterion[] = [
-      { id: 'tr', name: 'Task Response', score: 6.0, summary: '' },
-      { id: 'cc', name: 'Coherence and Cohesion', score: 6.5, summary: '' },
-      { id: 'lr', name: 'Lexical Resource', score: 6.5, summary: '' },
-      { id: 'gr', name: 'Grammar', score: 6.0, summary: '' },
+  it('should never score negatively and should count unanswered questions as wrong', () => {
+    const questions: ToeicQuestion[] = [
+      {
+        id: 'q1',
+        questionNumber: 1,
+        part: 1,
+        partTitle: 'Part 1',
+        instruction: '',
+        options: [],
+        correctAnswer: 'A',
+        explanation: '',
+      },
+      {
+        id: 'q2',
+        questionNumber: 2,
+        part: 1,
+        partTitle: 'Part 1',
+        instruction: '',
+        options: [],
+        correctAnswer: 'B',
+        explanation: '',
+      },
     ];
-    // raw average = (6.0 + 6.5 + 6.5 + 6.0) / 4 = 25.0 / 4 = 6.25 -> rounded to 6.5
-    expect(calculateIeltsOverallBand(rubric)).toBe(6.5);
 
-    const rubricHigher: RubricCriterion[] = [
-      { id: 'tr', name: 'Task Response', score: 7.0, summary: '' },
-      { id: 'cc', name: 'Coherence and Cohesion', score: 7.5, summary: '' },
-      { id: 'lr', name: 'Lexical Resource', score: 7.0, summary: '' },
-      { id: 'gr', name: 'Grammar', score: 7.5, summary: '' },
-    ];
-    // raw average = 29 / 4 = 7.25 -> rounded to 7.5
-    expect(calculateIeltsOverallBand(rubricHigher)).toBe(7.5);
+    // q1 unanswered, q2 answered wrongly.
+    const result = scoreToeicTest(questions, { q2: 'C' });
+    expect(result.correctCount).toBe(0);
+    expect(result.unansweredCount).toBe(1);
+    expect(result.incorrectCount).toBe(1);
+    expect(result.percentage).toBe(0);
+    expect(result.percentage).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should return a 0% score for an empty question list (no NaN)', () => {
+    const result = scoreToeicTest([], {});
+    expect(result).toEqual({
+      correctCount: 0,
+      totalCount: 0,
+      incorrectCount: 0,
+      unansweredCount: 0,
+      percentage: 0,
+    });
+    expect(Number.isNaN(result.percentage)).toBe(false);
+  });
+
+  it('should clamp negative/unset durations when formatting the timer', () => {
+    expect(formatTimeSeconds(-5)).toBe('00:00');
+    expect(formatTimeSeconds(Number.NaN)).toBe('00:00');
+  });
+});
+
+describe('TOEIC test clock expiry', () => {
+  const running: TestClockState = {
+    secondsRemaining: 1,
+    isPaused: false,
+    isSubmitted: false,
+  };
+
+  it('should finalize exactly once when the timer reaches zero', () => {
+    const tick = tickTestClock(running);
+    expect(tick.expired).toBe(true);
+    expect(tick.state.secondsRemaining).toBe(0);
+    expect(tick.state.isSubmitted).toBe(true);
+
+    // A second tick must NOT re-expire or re-finalize.
+    const second = tickTestClock(tick.state);
+    expect(second.expired).toBe(false);
+    expect(second.state).toEqual(tick.state);
+  });
+
+  it('should finalize a session that starts with zero seconds remaining', () => {
+    const finished = finalizeTestClock({ ...running, secondsRemaining: 0 });
+    expect(finished.isSubmitted).toBe(true);
+    expect(finished.secondsRemaining).toBe(0);
+  });
+
+  it('should not count down while paused and should resume correctly', () => {
+    const paused = tickTestClock({ ...running, isPaused: true });
+    expect(paused.expired).toBe(false);
+    expect(paused.state.secondsRemaining).toBe(1);
+
+    const resumed = tickTestClock({ ...paused.state, isPaused: false });
+    expect(resumed.expired).toBe(true);
+  });
+
+  it('should freeze answers after submit or after expiry', () => {
+    expect(canMutateAnswers(running)).toBe(true);
+    expect(canMutateAnswers({ ...running, isSubmitted: true })).toBe(false);
+    expect(canMutateAnswers(finalizeTestClock(running))).toBe(false);
+  });
+
+  it('should allow a manual submit before expiry without waiting for zero', () => {
+    const manual = finalizeTestClock({ ...running, secondsRemaining: 582 });
+    expect(manual.isSubmitted).toBe(true);
+    // Manual submit preserves the remaining time for display.
+    expect(manual.secondsRemaining).toBe(582);
+    expect(tickTestClock(manual).expired).toBe(false);
   });
 });

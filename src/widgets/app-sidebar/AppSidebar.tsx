@@ -107,7 +107,7 @@ export function AppSidebar({ onClose, className, isMobile }: AppSidebarProps) {
                 className={cn(
                   'flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                   isActive
-                    ? 'bg-sola-orange-soft text-sola-orange font-semibold shadow-xs'
+                    ? 'bg-sola-orange-soft text-sola-orange font-semibold shadow-sm'
                     : 'text-sola-navy-muted hover:text-sola-navy hover:bg-gray-50/80'
                 )}
               >
@@ -128,7 +128,7 @@ export function AppSidebar({ onClose, className, isMobile }: AppSidebarProps) {
               <Link
                 href="/assessment/test"
                 onClick={onClose}
-                className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-sola-orange-soft text-sola-orange border border-orange-200/60 shadow-xs"
+                className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-sola-orange-soft text-sola-orange border border-orange-200/60 shadow-sm"
               >
                 <Compass className="w-5 h-5 text-sola-orange animate-spin" style={{ animationDuration: '10s' }} />
                 <span>Placement Test</span>

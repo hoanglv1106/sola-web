@@ -110,17 +110,17 @@ export function AiTutorChatView() {
                       <img
                         src={msg.avatarUrl}
                         alt="Maya"
-                        className="w-10 h-10 rounded-full object-cover border border-amber-200 shrink-0 mt-0.5 shadow-2xs"
+                        className="w-10 h-10 rounded-full object-cover border border-amber-200 shrink-0 mt-0.5 shadow-sm"
                       />
                     )}
 
                     <div className={cn('space-y-1 max-w-lg', !isMaya && 'items-end flex flex-col')}>
                       <div
                         className={cn(
-                          'p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs whitespace-pre-line',
+                          'p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm whitespace-pre-line',
                           isMaya
-                            ? 'bg-[#fdfbf7] border border-amber-200/70 text-sola-navy rounded-tl-xs'
-                            : 'bg-sola-orange-soft/40 border border-orange-200 text-sola-navy rounded-tr-xs font-medium'
+                            ? 'bg-[#fdfbf7] border border-amber-200/70 text-sola-navy rounded-tl-sm'
+                            : 'bg-sola-orange-soft/40 border border-orange-200 text-sola-navy rounded-tr-sm font-medium'
                         )}
                       >
                         {msg.text}
@@ -136,7 +136,7 @@ export function AiTutorChatView() {
                       <img
                         src={msg.avatarUrl}
                         alt="Alex"
-                        className="w-10 h-10 rounded-full object-cover border border-orange-200 shrink-0 mt-0.5 shadow-2xs"
+                        className="w-10 h-10 rounded-full object-cover border border-orange-200 shrink-0 mt-0.5 shadow-sm"
                       />
                     )}
                   </div>
@@ -145,7 +145,7 @@ export function AiTutorChatView() {
             </div>
 
             {/* Input Area: Speak vs Type */}
-            <div className="rounded-3xl border border-amber-200/80 bg-gradient-to-b from-white to-[#fffaf3] p-4 sm:p-5 space-y-4 shadow-xs">
+            <div className="rounded-3xl border border-amber-200/80 bg-gradient-to-b from-white to-[#fffaf3] p-4 sm:p-5 space-y-4 shadow-sm">
               {/* Mode switch pills + Language selector */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 p-1 rounded-xl bg-gray-100 border border-gray-200/80">
@@ -154,7 +154,7 @@ export function AiTutorChatView() {
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
                       inputMode === 'speak'
-                        ? 'bg-white text-sola-orange shadow-2xs'
+                        ? 'bg-white text-sola-orange shadow-sm'
                         : 'text-sola-navy-muted hover:text-sola-navy'
                     )}
                   >
@@ -166,7 +166,7 @@ export function AiTutorChatView() {
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
                       inputMode === 'type'
-                        ? 'bg-white text-sola-orange shadow-2xs'
+                        ? 'bg-white text-sola-orange shadow-sm'
                         : 'text-sola-navy-muted hover:text-sola-navy'
                     )}
                   >
@@ -266,7 +266,7 @@ export function AiTutorChatView() {
             <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
               <button
                 onClick={() => router.push('/tutor/sessions/meeting-idea')}
-                className="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-orange-100 text-sola-orange border border-orange-200 text-xs font-bold shrink-0 shadow-xs cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-orange-100 text-sola-orange border border-orange-200 text-xs font-bold shrink-0 shadow-sm cursor-pointer"
               >
                 <Briefcase className="w-4 h-4" />
                 <span>Present a new idea in a team meeting</span>
@@ -298,7 +298,7 @@ export function AiTutorChatView() {
         {/* Right Column (4 cols): Maya Tutor + Focus + Live Feedback + Score */}
         <div className="lg:col-span-4 space-y-4">
           {/* Maya Coach Card */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-b from-[#fdfbf7] via-white to-[#fdf9f4] border border-amber-200/70 shadow-xs space-y-4 relative overflow-hidden">
+          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-b from-[#fdfbf7] via-white to-[#fdf9f4] border border-amber-200/70 shadow-sm space-y-4 relative overflow-hidden">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1 font-bold text-sm text-sola-navy">
@@ -323,7 +323,7 @@ export function AiTutorChatView() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-              <div className="relative z-10 m-3 p-3 rounded-xl bg-white/95 backdrop-blur-xs border border-amber-200/60 shadow-md">
+              <div className="relative z-10 m-3 p-3 rounded-xl bg-white/95 backdrop-blur-sm border border-amber-200/60 shadow-md">
                 <p className="text-xs font-medium text-sola-navy leading-relaxed">
                   You&apos;re doing great! I&apos;m here to support you with real conversations, helpful feedback, and encouragement every step of the way.
                 </p>
@@ -376,7 +376,7 @@ export function AiTutorChatView() {
                 className={cn(
                   'flex-1 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer',
                   feedbackTab === 'corrections'
-                    ? 'bg-sola-orange text-white shadow-2xs'
+                    ? 'bg-sola-orange text-white shadow-sm'
                     : 'text-sola-navy-muted hover:text-sola-navy'
                 )}
               >
@@ -387,7 +387,7 @@ export function AiTutorChatView() {
                 className={cn(
                   'flex-1 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer',
                   feedbackTab === 'phrasing'
-                    ? 'bg-sola-orange text-white shadow-2xs'
+                    ? 'bg-sola-orange text-white shadow-sm'
                     : 'text-sola-navy-muted hover:text-sola-navy'
                 )}
               >
@@ -398,7 +398,7 @@ export function AiTutorChatView() {
                 className={cn(
                   'flex-1 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer',
                   feedbackTab === 'vocabulary'
-                    ? 'bg-sola-orange text-white shadow-2xs'
+                    ? 'bg-sola-orange text-white shadow-sm'
                     : 'text-sola-navy-muted hover:text-sola-navy'
                 )}
               >

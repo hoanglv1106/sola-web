@@ -85,7 +85,7 @@ export function TestProgressBar({
               className={cn(
                 'p-3 sm:p-4 rounded-xl border transition-all flex flex-col justify-between',
                 skill.status === 'active'
-                  ? 'bg-[#fffbf8] border-sola-orange/50 shadow-xs'
+                  ? 'bg-[#fffbf8] border-sola-orange/50 shadow-sm'
                   : 'bg-white border-sola-border/80'
               )}
             >

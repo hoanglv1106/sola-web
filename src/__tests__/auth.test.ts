@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validatePasswordRules } from '@/modules/auth/types';
+import { validatePasswordRules, getPasswordRuleError } from '@/modules/auth/types';
 
 describe('Auth Password Validation Rules', () => {
   it('should fail when password is less than 8 characters', () => {
@@ -32,5 +32,29 @@ describe('Auth Password Validation Rules', () => {
     expect(valid.hasLetterAndNumber).toBe(true);
     expect(valid.hasSpecialChar).toBe(true);
     expect(valid.isValid).toBe(true);
+  });
+
+  it('should report the first unmet rule so the register form can block each one', () => {
+    // Each password violates exactly the rule named, in declaration order.
+    expect(getPasswordRuleError(validatePasswordRules('Ab1!'))).toBe(
+      'Password must be at least 8 characters'
+    );
+    expect(getPasswordRuleError(validatePasswordRules('abcdefgh!'))).toBe(
+      'Password must include a letter and a number'
+    );
+    expect(getPasswordRuleError(validatePasswordRules('Password1234'))).toBe(
+      'Password must include a special character (e.g. !@#$%)'
+    );
+    expect(getPasswordRuleError(validatePasswordRules('AlexPass123!'))).toBe('');
+  });
+
+  it('should never accept a partially typed password during registration', () => {
+    const valid = 'AlexPass123!';
+    for (let end = 1; end < valid.length; end += 1) {
+      const rules = validatePasswordRules(valid.slice(0, end));
+      if (!rules.isValid) {
+        expect(getPasswordRuleError(rules)).not.toBe('');
+      }
+    }
   });
 });

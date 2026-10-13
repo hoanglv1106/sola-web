@@ -23,10 +23,20 @@ import { Card } from '@/shared/ui/card/Card';
 import { Button } from '@/shared/ui/button/Button';
 import { mockToeicSession } from '@/mocks/exams.mock';
 import { ToeicQuestion } from '../../types';
+import { useMockSession } from '@/modules/learner';
+import {
+  canMutateAnswers,
+  finalizeTestClock,
+  formatTimeSeconds,
+  scoreToeicTest,
+  tickTestClock,
+  type TestClockState,
+} from '../../toeic/model';
 
 export function ToeicPracticeTestRunner() {
   const router = useRouter();
   const session = mockToeicSession;
+  const { profile } = useMockSession();
 
   const [currentSection, setCurrentSection] = useState<'listening' | 'reading'>('listening');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -34,32 +44,49 @@ export function ToeicPracticeTestRunner() {
     'toeic-q1': 'B', // default selected in design
   });
   const [reviewLater, setReviewLater] = useState<Record<string, boolean>>({});
-  const [timeRemaining, setTimeRemaining] = useState(session.timeRemainingSeconds);
-  const [isPaused, setIsPaused] = useState(false);
+  const [clock, setClock] = useState<TestClockState>(() => ({
+    secondsRemaining: session.timeRemainingSeconds,
+    isPaused: false,
+    isSubmitted: false,
+  }));
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Timer countdown
+  const timeRemaining = clock.secondsRemaining;
+  const isPaused = clock.isPaused;
+  const isSubmitted = clock.isSubmitted;
+
+  // Countdown. Reaching zero finalizes the test exactly once (handled inside
+  // `tickTestClock`, which also clears the interval by flipping `isSubmitted`).
   useEffect(() => {
-    if (isPaused || isSubmitted) return;
+    if (clock.isPaused || clock.isSubmitted) return;
+
     const interval = setInterval(() => {
-      setTimeRemaining((prev) => (prev > 0 ? prev - 1 : 0));
+      setClock((prev) => {
+        const tick = tickTestClock(prev);
+        return tick.state;
+      });
     }, 1000);
+
     return () => clearInterval(interval);
-  }, [isPaused, isSubmitted]);
+  }, [clock.isPaused, clock.isSubmitted]);
+
+  // A session that starts (or resumes) with no time left must also finalize.
+  useEffect(() => {
+    if (clock.secondsRemaining <= 0 && !clock.isSubmitted) {
+      setClock((prev) => finalizeTestClock(prev));
+    }
+  }, [clock.secondsRemaining, clock.isSubmitted]);
 
   const currentQ: ToeicQuestion = session.questions[currentQuestionIndex];
   const isBookmarked = !!reviewLater[currentQ.id];
   const selectedAnswer = userAnswers[currentQ.id];
+  const answersLocked = !canMutateAnswers(clock);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  const formatTime = (seconds: number) => formatTimeSeconds(seconds);
 
   const handleSelectOption = (key: 'A' | 'B' | 'C' | 'D') => {
+    if (answersLocked) return;
     setUserAnswers((prev) => ({
       ...prev,
       [currentQ.id]: key,
@@ -67,6 +94,7 @@ export function ToeicPracticeTestRunner() {
   };
 
   const toggleBookmark = () => {
+    if (answersLocked) return;
     setReviewLater((prev) => ({
       ...prev,
       [currentQ.id]: !prev[currentQ.id],
@@ -77,7 +105,7 @@ export function ToeicPracticeTestRunner() {
     if (currentQuestionIndex < session.questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      setIsSubmitted(true);
+      setClock((prev) => finalizeTestClock(prev));
     }
   };
 
@@ -87,15 +115,15 @@ export function ToeicPracticeTestRunner() {
     }
   };
 
-  // Calculate score for modal
-  const correctCount = session.questions.reduce((count, q) => {
-    return userAnswers[q.id] === q.correctAnswer ? count + 1 : count;
-  }, 0);
+  // Score for the results modal. Unanswered questions count as wrong and never
+  // produce a negative or NaN percentage.
+  const score = scoreToeicTest(session.questions, userAnswers);
+  const wasExpired = timeRemaining === 0 && score.unansweredCount > 0;
 
   return (
     <div className="space-y-6 pb-20">
       {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 shadow-xs">
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 shadow-sm">
         <div className="absolute -top-16 -right-12 w-64 h-64 rounded-full bg-orange-300/25 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -117,7 +145,7 @@ export function ToeicPracticeTestRunner() {
                 onClick={() => setCurrentSection('listening')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                   currentSection === 'listening'
-                    ? 'bg-white text-sola-orange border border-orange-200/90 shadow-2xs'
+                    ? 'bg-white text-sola-orange border border-orange-200/90 shadow-sm'
                     : 'bg-transparent text-sola-navy-muted hover:text-sola-navy'
                 }`}
               >
@@ -129,7 +157,7 @@ export function ToeicPracticeTestRunner() {
                 onClick={() => setCurrentSection('reading')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                   currentSection === 'reading'
-                    ? 'bg-white text-sola-orange border border-orange-200/90 shadow-2xs'
+                    ? 'bg-white text-sola-orange border border-orange-200/90 shadow-sm'
                     : 'bg-transparent text-sola-navy-muted hover:text-sola-navy'
                 }`}
               >
@@ -187,7 +215,8 @@ export function ToeicPracticeTestRunner() {
 
                 <button
                   type="button"
-                  onClick={() => setIsPaused(true)}
+                  onClick={() => setClock((prev) => ({ ...prev, isPaused: true }))}
+                  disabled={isSubmitted}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-gray-200 text-xs font-semibold text-sola-navy hover:bg-gray-50 transition-colors"
                 >
                   <Pause className="w-3.5 h-3.5" />
@@ -200,7 +229,7 @@ export function ToeicPracticeTestRunner() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
               {/* Left Column (6 cols): Photograph */}
               <div className="md:col-span-6 space-y-3">
-                <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden border border-gray-200 shadow-2xs bg-gray-50 group">
+                <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50 group">
                   {currentQ.imageUrl && (
                     <Image
                       src={currentQ.imageUrl}
@@ -216,7 +245,7 @@ export function ToeicPracticeTestRunner() {
                     <button
                       type="button"
                       onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-                      className="px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-xs text-sola-navy font-bold text-xs shadow-xs border border-gray-200 flex items-center gap-1.5 hover:bg-white"
+                      className="px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-sm text-sola-navy font-bold text-xs shadow-sm border border-gray-200 flex items-center gap-1.5 hover:bg-white"
                     >
                       <Volume2 className={`w-4 h-4 ${isPlayingAudio ? 'text-sola-orange animate-bounce' : 'text-gray-600'}`} />
                       <span>{isPlayingAudio ? 'Playing audio...' : 'Play audio'}</span>
@@ -243,12 +272,18 @@ export function ToeicPracticeTestRunner() {
                   const isSelected = selectedAnswer === opt.key;
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={opt.key}
                       onClick={() => handleSelectOption(opt.key)}
-                      className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer flex items-center gap-3.5 ${
+                      disabled={answersLocked}
+                      aria-pressed={isSelected}
+                      aria-label={`Option ${opt.key}: ${opt.text}`}
+                      className={`w-full text-left p-3.5 sm:p-4 rounded-2xl border transition-all flex items-center gap-3.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-sola-orange ${
+                        answersLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+                      } ${
                         isSelected
-                          ? 'border-sola-orange bg-[#fff9f4] shadow-2xs ring-1 ring-sola-orange/20'
+                          ? 'border-sola-orange bg-[#fff9f4] ring-1 ring-sola-orange/20'
                           : 'border-gray-100 hover:border-orange-200/80 bg-white'
                       }`}
                     >
@@ -270,7 +305,7 @@ export function ToeicPracticeTestRunner() {
                       >
                         {opt.text}
                       </p>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -447,7 +482,7 @@ export function ToeicPracticeTestRunner() {
           {/* Card 4: Maya's tip for you */}
           <Card className="p-5 space-y-3 bg-[#fff9f4] border-orange-200/80">
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-2xl overflow-hidden border border-white shadow-2xs bg-amber-100 shrink-0">
+              <div className="relative w-10 h-10 rounded-2xl overflow-hidden border border-white shadow-sm bg-amber-100 shrink-0">
                 <Image
                   src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
                   alt="Maya AI tutor"
@@ -511,7 +546,7 @@ export function ToeicPracticeTestRunner() {
 
       {/* MODAL 1: Image Zoom Modal */}
       {isEnlarged && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-5 max-w-2xl w-full space-y-3 shadow-2xl">
             <div className="flex items-center justify-between">
               <h4 className="font-bold text-base text-sola-navy">
@@ -527,7 +562,7 @@ export function ToeicPracticeTestRunner() {
               </button>
             </div>
 
-            <div className="relative aspect-16/10 w-full rounded-2xl overflow-hidden bg-black/5">
+            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-black/5">
               {currentQ.imageUrl && (
                 <Image
                   src={currentQ.imageUrl}
@@ -554,7 +589,7 @@ export function ToeicPracticeTestRunner() {
 
       {/* MODAL 2: Pause Modal */}
       {isPaused && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-xl text-center border border-amber-200">
             <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
               <Pause className="w-6 h-6" />
@@ -568,7 +603,7 @@ export function ToeicPracticeTestRunner() {
             <div className="space-y-2 pt-2">
               <Button
                 variant="primary"
-                onClick={() => setIsPaused(false)}
+                onClick={() => setClock((prev) => ({ ...prev, isPaused: false }))}
                 className="w-full text-xs font-bold"
               >
                 Resume Test
@@ -587,7 +622,7 @@ export function ToeicPracticeTestRunner() {
 
       {/* MODAL 3: Submit Results Modal */}
       {isSubmitted && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl border border-amber-200 text-center">
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-8 h-8" />
@@ -595,24 +630,31 @@ export function ToeicPracticeTestRunner() {
 
             <div>
               <span className="text-xs font-bold text-sola-orange uppercase tracking-wider">
-                Part 1 Complete
+                {wasExpired ? 'Time expired' : 'Part 1 Complete'}
               </span>
               <h3 className="text-2xl font-extrabold text-sola-navy mt-1">
-                Great job, Alex!
+                {wasExpired ? 'Time is up' : `Great job, ${profile.name.split(' ')[0]}!`}
               </h3>
               <p className="text-xs sm:text-sm text-sola-text-secondary mt-1">
-                You completed the Part 1 Photographs practice simulation.
+                {wasExpired
+                  ? 'Your answers were submitted automatically when the timer reached zero.'
+                  : 'You completed the Part 1 Photographs practice simulation.'}
               </p>
             </div>
 
             {/* Score Ring / Summary */}
             <div className="p-4 rounded-2xl bg-[#fbfbfe] border border-gray-100 space-y-2">
               <div className="text-3xl font-extrabold text-sola-navy">
-                {correctCount} / {session.questions.length} Correct
+                {score.correctCount} / {score.totalCount} Correct
               </div>
               <p className="text-xs text-emerald-700 font-semibold">
-                Estimated Part 1 Accuracy: {Math.round((correctCount / session.questions.length) * 100)}%
+                Estimated Part 1 Accuracy: {score.percentage}%
               </p>
+              {score.unansweredCount > 0 && (
+                <p className="text-[11px] text-sola-text-secondary font-medium">
+                  {score.unansweredCount} unanswered · counted as incorrect
+                </p>
+              )}
             </div>
 
             {/* Explanation review note */}
@@ -631,7 +673,13 @@ export function ToeicPracticeTestRunner() {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  setIsSubmitted(false);
+                  setClock({
+                    secondsRemaining: session.timeRemainingSeconds,
+                    isPaused: false,
+                    isSubmitted: false,
+                  });
+                  setUserAnswers({});
+                  setReviewLater({});
                   setCurrentQuestionIndex(0);
                 }}
                 className="w-full text-xs"

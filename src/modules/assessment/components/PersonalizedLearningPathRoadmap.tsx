@@ -95,7 +95,7 @@ export function PersonalizedLearningPathRoadmap({
         </div>
 
         {/* Right side motivational banner */}
-        <div className="lg:w-72 shrink-0 p-5 rounded-xl bg-gradient-to-b from-[#fdf7ef] to-[#f8ede0] border border-amber-200/60 shadow-xs flex flex-col justify-between">
+        <div className="lg:w-72 shrink-0 p-5 rounded-xl bg-gradient-to-b from-[#fdf7ef] to-[#f8ede0] border border-amber-200/60 shadow-sm flex flex-col justify-between">
           <div className="space-y-2">
             <p className="font-handwriting text-xl font-bold text-amber-950 italic flex items-center gap-1.5">
               <span>A clearer plan a brighter you.</span>

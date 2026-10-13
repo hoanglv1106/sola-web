@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   BookOpen,
@@ -18,24 +18,63 @@ import {
   Check,
   ArrowRight,
 } from 'lucide-react';
-import { mockAgreeDrillData } from '@/mocks/mistakes.mock';
 import { Card } from '@/shared/ui/card/Card';
 import { Button } from '@/shared/ui/button/Button';
 import { ProgressRing } from '@/shared/ui/progress/ProgressRing';
 import { cn } from '@/shared/lib/cn';
+import { renderHighlightedText as renderHighlighted } from '@/shared/lib/highlight';
+import { useDomainResource } from '@/shared/hooks';
+import { fetchMistakePractice } from '../api/mistakes-api';
+import { useMistakeProgress } from '../hooks/use-mistake-progress';
 
-export function PracticeMistakeRunner() {
+export interface PracticeMistakeRunnerProps {
+  /** Route param `/mistakes/[mistakeId]/practice`. */
+  mistakeId?: string;
+}
+
+export function PracticeMistakeRunner({ mistakeId = '' }: PracticeMistakeRunnerProps) {
   const router = useRouter();
-  const drill = mockAgreeDrillData;
+
+  // Stable loader: recreated only when the route id changes, so the resource does
+  // not re-fetch (and answers are not reset) on unrelated re-renders.
+  const loadPractice = useCallback(
+    (signal?: AbortSignal) => fetchMistakePractice(mistakeId, signal),
+    [mistakeId]
+  );
+  // `resourceKey` is the route id: changing it re-runs the loader, aborts the
+  // in-flight request for the previous id and clears the previous payload, so a
+  // retained runner can never render A's content while showing B's id.
+  const resource = useDomainResource(loadPractice, { resourceKey: mistakeId });
 
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<string>('B'); // Preselect B to match mockup!
-  const [showExplanation, setShowExplanation] = useState(true);
-  const [isMarkedImproved, setIsMarkedImproved] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [syncedRevision, setSyncedRevision] = useState(0);
 
-  const currentQ = drill.questions[questionIndex] || drill.questions[0];
+  // Persisted improvement state — the shared source of truth with the dashboard.
+  const progress = useMistakeProgress();
+
+  const drill = resource.data?.drill ?? null;
+  const requestedId = resource.data?.requestedId ?? mistakeId;
+
+  // Reset per-question state and the improvement flag whenever a NEW drill
+  // loads, so answers from a previous route id never leak into the next one.
+  useEffect(() => {
+    if (resource.revision === 0 || resource.revision === syncedRevision) return;
+    setSyncedRevision(resource.revision);
+    setQuestionIndex(0);
+    setSelectedOption('');
+    setShowExplanation(false);
+  }, [resource.revision, syncedRevision]);
+
+  const currentQ = drill?.questions[questionIndex] ?? drill?.questions[0];
+
+  // The improvement flag is READ from the persisted store, so it survives
+  // navigation and remounts and stays consistent with the notebook dashboard.
+  const isMarkedImproved = requestedId ? progress.isImproved(requestedId) : false;
 
   const handleNextQuestion = () => {
+    if (!drill) return;
     if (questionIndex < drill.questions.length - 1) {
       setQuestionIndex((prev) => prev + 1);
       setSelectedOption('');
@@ -53,6 +92,80 @@ export function PracticeMistakeRunner() {
     }
   };
 
+  if (resource.state === 'loading') {
+    return (
+      <div className="space-y-6 pb-16">
+        <Card className="p-6 sm:p-8 max-w-2xl">
+          <div role="status" aria-live="polite" className="space-y-3">
+            <div className="h-5 w-40 rounded-lg bg-gray-100/80 animate-pulse" aria-hidden="true" />
+            <div className="h-3 w-64 rounded-lg bg-gray-100/80 animate-pulse" aria-hidden="true" />
+            <div className="h-24 w-full rounded-2xl bg-gray-100/80 animate-pulse" aria-hidden="true" />
+            <span className="sr-only">Loading this practice drill…</span>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (resource.state === 'error') {
+    return (
+      <div className="space-y-6 pb-16">
+        <Card className="p-6 sm:p-8 space-y-4 max-w-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+              <XCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-lg font-extrabold text-sola-navy">
+                We couldn&apos;t load this practice drill.
+              </h1>
+              <p className="text-xs sm:text-sm text-sola-text-secondary">{resource.error}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button variant="primary" size="md" onClick={resource.reload}>
+              Try again
+            </Button>
+            <Button variant="outline" size="md" onClick={() => router.push('/mistakes')}>
+              Back to Mistakes &amp; Review
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!drill || !currentQ) {
+    return (
+      <div className="space-y-6 pb-16">
+        <Card className="p-6 sm:p-8 space-y-4 max-w-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+              <XCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-lg font-extrabold text-sola-navy">
+                Practice drill not found
+              </h1>
+              <p className="text-xs sm:text-sm text-sola-text-secondary">
+                We couldn&apos;t find a practice drill for{' '}
+                <span className="font-bold text-sola-navy">
+                  {requestedId || '(empty id)'}
+                </span>
+                . This entry may have been removed from your mistake notebook.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button variant="primary" size="md" onClick={() => router.push('/mistakes')}>
+              Back to Mistakes & Review
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pb-16">
       {/* 1. Header & Breadcrumbs */}
@@ -68,7 +181,7 @@ export function PracticeMistakeRunner() {
           <span className="text-sola-orange font-bold">Practice a Mistake</span>
         </div>
 
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 shadow-xs">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#fcecd7] border border-amber-200/70 p-6 sm:p-8 shadow-sm">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-1.5 max-w-xl">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-sola-navy tracking-tight">
@@ -131,7 +244,7 @@ export function PracticeMistakeRunner() {
                         className={cn(
                           'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold transition-all',
                           s.active
-                            ? 'bg-sola-orange text-white shadow-xs'
+                            ? 'bg-sola-orange text-white shadow-sm'
                             : 'bg-gray-100 text-gray-400'
                         )}
                       >
@@ -160,7 +273,7 @@ export function PracticeMistakeRunner() {
                   <span>The mistake</span>
                 </div>
                 <p className="text-sm sm:text-base font-bold text-sola-navy">
-                  I <span className="underline decoration-red-500 underline-offset-4">am agree</span> with you.
+                  {renderHighlighted(drill.userMistakeSentence, drill.mistakeHighlight, { tone: 'red' })}
                 </p>
               </div>
 
@@ -175,7 +288,7 @@ export function PracticeMistakeRunner() {
                   <span>The correct answer</span>
                 </div>
                 <p className="text-sm sm:text-base font-bold text-emerald-950">
-                  I <span className="underline decoration-emerald-500 underline-offset-4 font-black">agree</span> with you.
+                  {renderHighlighted(drill.correctSentence, drill.correctHighlight, { tone: 'emerald' })}
                 </p>
               </div>
             </div>
@@ -336,7 +449,7 @@ export function PracticeMistakeRunner() {
         {/* Right 4 cols: Maya Speech + Progress & Confidence + Actions */}
         <div className="lg:col-span-4 space-y-4">
           {/* Maya Coach Card */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#fdfbf7] via-white to-[#fdf9f4] border border-amber-200/70 shadow-xs space-y-3 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#fdfbf7] via-white to-[#fdf9f4] border border-amber-200/70 shadow-sm space-y-3 relative overflow-hidden">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1 font-bold text-sm text-sola-navy">
@@ -361,7 +474,7 @@ export function PracticeMistakeRunner() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-              <div className="relative z-10 m-2.5 p-3 rounded-xl bg-white/95 backdrop-blur-xs border border-amber-200/60 shadow-md">
+              <div className="relative z-10 m-2.5 p-3 rounded-xl bg-white/95 backdrop-blur-sm border border-amber-200/60 shadow-md">
                 <p className="text-[11px] font-medium text-sola-navy leading-relaxed">
                   This is a common mistake! You&apos;re not alone. Keep practicing and you&apos;ll use it correctly and naturally soon.
                 </p>
@@ -444,12 +557,19 @@ export function PracticeMistakeRunner() {
 
           {/* Mark as improved CTA banner */}
           <button
-            onClick={() => setIsMarkedImproved(!isMarkedImproved)}
+            onClick={() => {
+              if (!requestedId) return;
+              if (isMarkedImproved) {
+                progress.unmarkImproved(requestedId);
+              } else {
+                progress.markImproved(requestedId);
+              }
+            }}
             className={cn(
               'w-full p-4 rounded-2xl border transition-all text-left flex items-center justify-between cursor-pointer',
               isMarkedImproved
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
-                : 'bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border-orange-200 hover:shadow-xs'
+                : 'bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border-orange-200 hover:shadow-sm'
             )}
           >
             <div className="flex items-center gap-3">

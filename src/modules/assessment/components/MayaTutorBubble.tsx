@@ -32,7 +32,7 @@ export function MayaTutorBubble() {
       </div>
 
       {/* Speech bubble */}
-      <div className="p-4 rounded-xl bg-white/90 backdrop-blur-xs border border-amber-200/60 shadow-xs relative">
+      <div className="p-4 rounded-xl bg-white/90 backdrop-blur-sm border border-amber-200/60 shadow-sm relative">
         <p className="text-xs sm:text-sm text-sola-navy font-medium leading-relaxed">
           You&apos;re doing great! This short test helps me get to know your English level so I can create the best learning plan for you. Take your time — you can do this! 💪
         </p>

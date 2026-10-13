@@ -35,7 +35,7 @@ export function OnboardingStepper({ currentStep = 1 }: { currentStep?: number })
                 className={cn(
                   'flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-colors',
                   isActive
-                    ? 'bg-sola-orange text-white shadow-xs'
+                    ? 'bg-sola-orange text-white shadow-sm'
                     : isCompleted
                     ? 'bg-orange-100 text-sola-orange'
                     : 'bg-gray-100 text-gray-400'

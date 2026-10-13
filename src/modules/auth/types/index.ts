@@ -37,3 +37,22 @@ export function validatePasswordRules(password: string): PasswordRuleStatus {
     isValid: hasMinLength && hasLetterAndNumber && hasSpecialChar,
   };
 }
+
+/**
+ * Human-readable error for the first unmet password rule.
+ *
+ * The messages mirror the labels rendered by `PasswordRequirements` so the
+ * inline hints and the submit error never disagree.
+ */
+export function getPasswordRuleError(rules: PasswordRuleStatus): string {
+  if (!rules.hasMinLength) {
+    return 'Password must be at least 8 characters';
+  }
+  if (!rules.hasLetterAndNumber) {
+    return 'Password must include a letter and a number';
+  }
+  if (!rules.hasSpecialChar) {
+    return 'Password must include a special character (e.g. !@#$%)';
+  }
+  return '';
+}

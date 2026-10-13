@@ -26,7 +26,7 @@ export function ExamRightSidebar({
   return (
     <aside className="space-y-5">
       {/* 1. Motivational Hero Card */}
-      <Card className="p-6 relative overflow-hidden bg-gradient-to-b from-[#fff6ed] to-[#fae8d4] border-amber-200/80 shadow-xs">
+      <Card className="p-6 relative overflow-hidden bg-gradient-to-b from-[#fff6ed] to-[#fae8d4] border-amber-200/80 shadow-sm">
         <div className="absolute top-2 right-3 font-handwriting text-right text-amber-900/90 font-bold text-sm leading-tight italic">
           <span>Good English</span>
           <br />
@@ -44,7 +44,7 @@ export function ExamRightSidebar({
         </div>
 
         {/* Student Illustration */}
-        <div className="mt-4 relative h-40 w-full rounded-2xl overflow-hidden border border-white/80 shadow-2xs">
+        <div className="mt-4 relative h-40 w-full rounded-2xl overflow-hidden border border-white/80 shadow-sm">
           <Image
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
             alt="Confident learner"

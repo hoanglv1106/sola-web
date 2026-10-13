@@ -15,24 +15,39 @@ import {
   ListCheck,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+import { SelectionGroup } from '@/shared/ui/selection/SelectionGroup';
+import { gradeSessionStep } from '../model';
 
 export function TodaySessionRunner() {
   const router = useRouter();
   const session = mockTodaySession;
 
-  // Track answers for Step 1 exercise
-  const [answers, setAnswers] = useState<Record<string, string>>({
-    q1: 'would rather', // pre-select to match mockup!
-  });
+  // Track answers for Step 1 exercise. Nothing is pre-selected: the learner's
+  // own choice is what gets graded against the fixture's correctAnswer.
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isChecked, setIsChecked] = useState(false);
 
   const currentStep = session.steps[0]; // Step 1 Grammar Warm-up
 
+  const grading = gradeSessionStep(currentStep, answers);
+  const wrongAnswers = grading.answers.filter(
+    (answer) => answer.selected !== null && !answer.isCorrect
+  );
+
   const handleSelect = (questionId: string, option: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: option,
-    }));
+    setAnswers((prev) => {
+      if (prev[questionId] === option) return prev;
+      return {
+        ...prev,
+        [questionId]: option,
+      };
+    });
+    // Editing after checking invalidates the previous result.
+    setIsChecked(false);
+  };
+
+  const handleCheck = () => {
+    setIsChecked(true);
   };
 
   const handleNext = () => {
@@ -60,7 +75,7 @@ export function TodaySessionRunner() {
         </div>
 
         {/* Right header inspirational banner */}
-        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-xs">
+        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-sm">
           <div>
             <p className="font-handwriting text-base font-bold text-amber-950 italic flex items-center gap-1">
               <span>Good conversations brighter tomorrows.</span>
@@ -101,7 +116,7 @@ export function TodaySessionRunner() {
                   className={cn(
                     'p-2 sm:px-3 sm:py-2 rounded-xl border flex items-center gap-2 shrink-0 transition-all',
                     isCurrent
-                      ? 'bg-sola-orange text-white border-sola-orange shadow-xs'
+                      ? 'bg-sola-orange text-white border-sola-orange shadow-sm'
                       : 'bg-white border-sola-border text-sola-navy-muted'
                   )}
                 >
@@ -217,46 +232,75 @@ export function TodaySessionRunner() {
                     </div>
 
                     {/* Radio Options */}
-                    <div className="flex items-center gap-3 shrink-0 pl-8 sm:pl-0">
-                      {q.options.map((opt) => {
-                        const isSelected = answers[q.id] === opt;
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => handleSelect(q.id, opt)}
-                            className={cn(
-                              'px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-2 transition-all',
-                              isSelected
-                                ? 'bg-[#fff9f5] border-sola-orange text-sola-orange ring-1 ring-sola-orange'
-                                : 'bg-white border-sola-border text-sola-text-secondary hover:bg-gray-50'
-                            )}
-                          >
-                            <span
-                              className={cn(
-                                'w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0',
-                                isSelected ? 'border-sola-orange' : 'border-gray-300'
-                              )}
-                            >
-                              {isSelected && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-sola-orange" />
-                              )}
-                            </span>
-                            <span>{opt}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    {/* Radio Options */}
+                    <SelectionGroup
+                      label={`${q.sentenceBefore} ____ ${q.sentenceAfter}`}
+                      hideLabel
+                      options={q.options.map((opt) => ({
+                        value: opt,
+                        label: opt,
+                        description:
+                          answers[q.id] === opt ? 'selected' : undefined,
+                      }))}
+                      value={answers[q.id] ?? null}
+                      onChange={(value) => handleSelect(q.id, value)}
+                      getOptionAriaLabel={(option) =>
+                        `${q.sentenceBefore} ${option.value} ${q.sentenceAfter}`
+                      }
+                      role="radiogroup"
+                      showRadioDot
+                      className="flex items-center gap-3 shrink-0 pl-8 sm:pl-0"
+                      optionClassName={(_option, isSelected) =>
+                        cn(
+                          'px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-2 transition-all',
+                          isSelected
+                            ? 'bg-[#fff9f5] border-sola-orange text-sola-orange ring-1 ring-sola-orange'
+                            : 'bg-white border-sola-border text-sola-text-secondary hover:bg-gray-50'
+                        )
+                      }
+                    />
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Check results banner if checked */}
+            {/* Check results banner: derived from the learner's actual answers */}
             {isChecked && (
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fade-in">
-                <Check className="w-5 h-5 text-sola-green shrink-0" />
-                <span>Excellent job! All answers are grammatically accurate. Ready for speaking!</span>
+              <div
+                role="status"
+                aria-live="polite"
+                className={cn(
+                  'p-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fade-in',
+                  grading.allCorrect
+                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-900'
+                    : 'bg-amber-50 border border-amber-200 text-amber-900'
+                )}
+              >
+                {grading.allCorrect ? (
+                  <>
+                    <Check className="w-5 h-5 text-sola-green shrink-0" />
+                    <span>
+                      Excellent job! All {grading.totalCount} answers are grammatically
+                      accurate. Ready for speaking!
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Lightbulb className="w-5 h-5 text-amber-700 shrink-0" />
+                    <span>
+                      {grading.correctCount}/{grading.totalCount} correct
+                      {grading.missingCount > 0
+                        ? ` · ${grading.missingCount} unanswered`
+                        : ''}
+                      {wrongAnswers.length > 0
+                        ? ` · review: ${wrongAnswers
+                            .map((answer) => answer.questionId)
+                            .join(', ')}`
+                        : ''}
+                      . Try again before moving on.
+                    </span>
+                  </>
+                )}
               </div>
             )}
 
@@ -265,7 +309,7 @@ export function TodaySessionRunner() {
               <Button
                 variant="secondary"
                 size="md"
-                onClick={() => setIsChecked(true)}
+                onClick={handleCheck}
                 iconLeft={<ListCheck className="w-4 h-4 text-sola-navy-muted" />}
                 className="w-full sm:w-auto"
               >
@@ -308,7 +352,7 @@ export function TodaySessionRunner() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/90 border border-amber-200/60 shadow-2xs">
+            <div className="p-4 rounded-xl bg-white/90 border border-amber-200/60 shadow-sm">
               <p className="text-xs text-sola-navy leading-relaxed">
                 Great choice, Alex! This grammar warm-up helps you express your ideas more naturally in real conversations. “Would rather” is common in daily life, so it&apos;s perfect for your goal of speaking with more confidence. You&apos;ve got this!
               </p>
@@ -365,7 +409,7 @@ export function TodaySessionRunner() {
           </Card>
 
           {/* Bottom motivational card */}
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-orange-50 via-white to-amber-50 border border-amber-200/60 shadow-xs flex items-center gap-3.5">
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-orange-50 via-white to-amber-50 border border-amber-200/60 shadow-sm flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-sola-orange shrink-0">
               🌱
             </div>

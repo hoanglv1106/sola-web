@@ -111,7 +111,7 @@ export function LearningPath() {
         </div>
 
         {/* Right header inspirational banner */}
-        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-xs">
+        <div className="hidden md:flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-amber-200/60 shadow-sm">
           <div>
             <p className="font-handwriting text-base font-bold text-amber-950 italic flex items-center gap-1">
               <span>Small steps brighter destinations.</span>
@@ -183,7 +183,7 @@ export function LearningPath() {
             </p>
           </div>
           <div className="text-right">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 border border-amber-200 text-xs font-bold text-sola-orange shadow-2xs">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 border border-amber-200 text-xs font-bold text-sola-orange shadow-sm">
               You can do this, Alex! ❤️
             </span>
           </div>
@@ -228,7 +228,7 @@ export function LearningPath() {
                     <div
                       className={cn(
                         'w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-all',
-                        isCompleted && 'bg-sola-orange text-white shadow-xs',
+                        isCompleted && 'bg-sola-orange text-white shadow-sm',
                         isCurrent &&
                           'bg-white border-4 border-sola-orange text-sola-orange shadow-md scale-110 ring-4 ring-orange-100',
                         stage.status === 'AVAILABLE' &&
@@ -364,7 +364,7 @@ export function LearningPath() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="p-4 rounded-xl border border-sola-border bg-[#fffdfb] flex flex-col justify-between space-y-3 hover:border-orange-300 hover:shadow-xs transition-all group"
+                className="p-4 rounded-xl border border-sola-border bg-[#fffdfb] flex flex-col justify-between space-y-3 hover:border-orange-300 hover:shadow-sm transition-all group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">

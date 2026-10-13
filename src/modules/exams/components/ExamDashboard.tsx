@@ -51,7 +51,7 @@ export function ExamDashboard() {
 
       {/* 2. Exam Segment Tabs Switcher (IELTS / TOEIC) */}
       <div className="flex items-center gap-3">
-        <div className="inline-flex p-1.5 rounded-2xl bg-gray-100/90 border border-gray-200/60 shadow-2xs">
+        <div className="inline-flex p-1.5 rounded-2xl bg-gray-100/90 border border-gray-200/60 shadow-sm">
           <button
             type="button"
             onClick={() => setActiveExam('ielts')}

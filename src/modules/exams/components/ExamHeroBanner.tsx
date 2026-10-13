@@ -16,7 +16,7 @@ export function ExamHeroBanner({
   handwritingText = 'Same effort, A brighter future',
 }: ExamHeroBannerProps) {
   return (
-    <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 lg:p-10 shadow-xs">
+    <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#fffbf4] via-[#fdf7ee] to-[#faedd9] border border-amber-200/70 p-6 sm:p-8 lg:p-10 shadow-sm">
       {/* Soft background sunrise blobs */}
       <div className="absolute -top-16 -right-12 w-72 h-72 rounded-full bg-orange-300/25 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-52 h-52 rounded-full bg-amber-200/35 blur-2xl pointer-events-none" />

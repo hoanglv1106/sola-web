@@ -65,7 +65,7 @@ export function LessonEngine({ lesson }: LessonEngineProps) {
                     className={cn(
                       'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0',
                       isCurrent
-                        ? 'bg-sola-orange text-white shadow-xs'
+                        ? 'bg-sola-orange text-white shadow-sm'
                         : isCompleted
                         ? 'bg-emerald-100 text-sola-green'
                         : 'bg-gray-100 text-gray-400'
@@ -278,7 +278,7 @@ export function LessonEngine({ lesson }: LessonEngineProps) {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white/90 border border-amber-200/60 shadow-2xs">
+            <div className="p-3.5 rounded-xl bg-white/90 border border-amber-200/60 shadow-sm">
               <p className="text-xs text-sola-navy leading-relaxed">
                 {lesson.mayaAdvice}
               </p>
@@ -340,7 +340,7 @@ export function LessonEngine({ lesson }: LessonEngineProps) {
                     className={cn(
                       'w-full text-left p-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2.5 transition-all',
                       isSelected
-                        ? 'bg-[#fff9f5] border-sola-orange text-sola-navy shadow-2xs'
+                        ? 'bg-[#fff9f5] border-sola-orange text-sola-navy shadow-sm'
                         : 'bg-white border-sola-border text-sola-text-secondary hover:bg-gray-50'
                     )}
                   >

@@ -73,7 +73,7 @@ export function PlacementQuestionCard({
               className={cn(
                 'w-full text-left p-4 rounded-xl border transition-all flex items-center gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-sola-orange',
                 isSelected
-                  ? 'bg-[#fff9f5] border-sola-orange ring-1 ring-sola-orange shadow-xs'
+                  ? 'bg-[#fff9f5] border-sola-orange ring-1 ring-sola-orange shadow-sm'
                   : 'bg-white border-sola-border hover:border-orange-200 hover:bg-[#fffdfb]'
               )}
             >

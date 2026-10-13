@@ -7,4 +7,5 @@ export * from './components/UserMessage';
 export * from './components/VoiceRecorder';
 export * from './components/LiveFeedback';
 export * from './components/SessionScore';
+export * from './model';
 export * from './types';

@@ -27,6 +27,13 @@ import { Card } from '@/shared/ui/card/Card';
 import { Button } from '@/shared/ui/button/Button';
 import { ProgressBar } from '@/shared/ui/progress/Progress';
 import { cn } from '@/shared/lib/cn';
+import {
+  formatSessionDuration,
+  isVoiceTimerRunning,
+  voiceSessionReducer,
+  type VoiceSessionEventType,
+  type VoiceSessionState,
+} from '../model';
 
 interface AiTutorVoicePracticeProps {
   sessionId?: string;
@@ -36,27 +43,25 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
   const router = useRouter();
   const scenario = mockDefaultScenario;
 
-  const [isRecording, setIsRecording] = useState(true);
+  // Simulated (mock) voice session: the state machine is the production model
+  // shared with the tests; no real speech recognition is implemented.
+  const [voiceState, setVoiceState] = useState<VoiceSessionState>('listening');
   const [seconds, setSeconds] = useState(12);
   const [isPlayingMayaAudio, setIsPlayingMayaAudio] = useState(false);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (isRecording) {
-      interval = setInterval(() => {
-        setSeconds((s) => s + 1);
-      }, 1000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isRecording]);
+  const isRecording = voiceState === 'listening';
+  const dispatchVoiceEvent = (type: VoiceSessionEventType) =>
+    setVoiceState((prev) => voiceSessionReducer(prev, { type }));
 
-  const formatTimer = (sec: number) => {
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = (sec % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+  useEffect(() => {
+    if (!isVoiceTimerRunning(voiceState)) return;
+    const interval = setInterval(() => {
+      setSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [voiceState]);
+
+  const formatTimer = (sec: number) => formatSessionDuration(sec);
 
   const handleEndSession = () => {
     router.push(`/tutor/sessions/${sessionId}/feedback`);
@@ -141,7 +146,7 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
               <img
                 src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
                 alt="Maya"
-                className="w-12 h-12 rounded-full object-cover border-2 border-amber-200 shrink-0 shadow-xs"
+                className="w-12 h-12 rounded-full object-cover border-2 border-amber-200 shrink-0 shadow-sm"
               />
 
               <div className="flex-1 space-y-2">
@@ -150,7 +155,7 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
                   <span>👋</span>
                 </div>
 
-                <div className="p-4 sm:p-5 rounded-2xl rounded-tl-xs bg-[#fdfbf7] border border-amber-200/70 text-xs sm:text-sm text-sola-navy leading-relaxed space-y-3 relative overflow-hidden">
+                <div className="p-4 sm:p-5 rounded-2xl rounded-tl-sm bg-[#fdfbf7] border border-amber-200/70 text-xs sm:text-sm text-sola-navy leading-relaxed space-y-3 relative overflow-hidden">
                   <div className="absolute top-2 right-4 font-handwriting text-sm font-bold text-amber-900/60 italic hidden sm:block">
                     Your ideas matter! Speak naturally. ♡
                   </div>
@@ -184,10 +189,10 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
               <div className="flex items-center justify-between w-full max-w-md px-4">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-sola-orange bg-orange-100/80 border border-orange-200 px-3 py-1 rounded-full">
                   <span className="w-2 h-2 rounded-full bg-sola-orange animate-ping" />
-                  <span>Speaking...</span>
+                  <span>{isRecording ? 'Speaking...' : 'Paused'}</span>
                 </span>
 
-                <span className="font-mono text-sm font-bold text-sola-navy bg-white border border-sola-border px-3 py-1 rounded-full shadow-2xs">
+                <span className="font-mono text-sm font-bold text-sola-navy bg-white border border-sola-border px-3 py-1 rounded-full shadow-sm">
                   {formatTimer(seconds)}
                 </span>
               </div>
@@ -213,9 +218,9 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
 
                 {/* Big Mic Button */}
                 <button
-                  onClick={() => setIsRecording(!isRecording)}
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-sola-orange to-amber-400 flex items-center justify-center text-white shadow-sola-button hover:scale-105 transition-all ring-8 ring-orange-100/80 cursor-pointer shrink-0"
-                  title={isRecording ? 'Click to pause' : 'Click to resume'}
+                  onClick={() => dispatchVoiceEvent(isRecording ? 'PAUSE' : 'RESUME')}
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-sola-orange to-amber-400 flex items-center justify-center text-white shadow-sola-button hover:scale-105 transition-all ring-8 ring-orange-100/80 cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-sola-orange/40 shrink-0"
+                  aria-label={isRecording ? 'Pause speaking' : 'Resume speaking'}
                 >
                   <Mic className="w-9 h-9 sm:w-10 sm:h-10" />
                 </button>
@@ -254,8 +259,9 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
               </button>
 
               <button
-                onClick={() => setIsRecording(!isRecording)}
-                className="flex items-center justify-center gap-1.5 p-3 rounded-2xl border border-sola-border bg-white text-xs font-bold text-sola-navy hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => dispatchVoiceEvent(isRecording ? 'PAUSE' : 'RESUME')}
+                aria-pressed={!isRecording}
+                className="flex items-center justify-center gap-1.5 p-3 rounded-2xl border border-sola-border bg-white text-xs font-bold text-sola-navy hover:bg-gray-50 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sola-orange"
               >
                 {isRecording ? (
                   <>
@@ -273,7 +279,7 @@ export function AiTutorVoicePractice({ sessionId = 'meeting-idea' }: AiTutorVoic
               <Button
                 variant="primary"
                 size="md"
-                className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold border-red-600 shadow-xs"
+                className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold border-red-600 shadow-sm"
                 onClick={handleEndSession}
               >
                 <Square className="w-3.5 h-3.5 fill-white mr-1.5" />
